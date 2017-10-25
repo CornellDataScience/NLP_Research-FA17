@@ -7,9 +7,11 @@ This is a wrapper class to create a k-dimensional topic distribution for one tex
 
 ## Documentation
 #### Parameters:
-*vectorizer(CountVectorizer)* : Count vectorizer object
-*feature_names(list)* : List of vocabulary
-*lda_model(LatentDirichletAllocation)* : Topic model
+- *vectorizer(CountVectorizer)* : Count vectorizer object
+
+- *feature_names(list)* : List of vocabulary
+
+- *lda_model(LatentDirichletAllocation)* : Topic model
 
 #### Methods:
 ```python
@@ -17,11 +19,11 @@ __init__(model = None, counter = None, max_features = 100000)
 ```
 If loading pre-trained model, use model, counter parameter at the point of instantiation. If not specified, you need to train the topic model using fit function.
 
-*display_topics(n_top_words, topic_n = None)* : Display the top n words for each topic in the model
+- *display_topics(n_top_words, topic_n = None)* : Display the top n words for each topic in the model
 
-*fit(texts, n = 100)* : Train the LDA model with given list of documents
+- *fit(texts, n = 100)* : Train the LDA model with given list of documents
 
-*embed(text, method)* : Embed the review text into k-dimensional topic vector
+- *embed(text, method)* : Embed the review text into k-dimensional topic vector
 
 ## Example
 ```python
