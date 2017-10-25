@@ -19,6 +19,14 @@ class LDAembedder(object):
 
 
     def display_topics(self, n_top_words, topic_n = None):
+        '''
+        Display the top n words for each topic in the model.
+
+        Input:
+            n_top_words(int) : the number of words to display for each topic
+            (Optional)
+            topic_n(int) : if specified, only diplay the topic_nth topic
+        '''
         model = self.lda_model
         feature_names = self.feature_names
 
@@ -35,13 +43,30 @@ class LDAembedder(object):
             raise Exception('You have to train before display')
 
 
-    def fit(self, texts, n):
-        count = self.vectorizer.fit_transform(review_chinese['text'])
+    def fit(self, texts, n = 100):
+        '''
+        Train the LDA with n number of topics
+
+        Input:
+            texts(list) : list of documents. Each item in the list is a string type
+            n(int) : number of topics, if not specified n = 100
+        '''
+        count = self.vectorizer.fit_transform(texts)
         self.feature_names = self.vectorizer.get_feature_names()
         model = LatentDirichletAllocation(n_topics=n).fit(count)
         self.lda_model = model
 
     def embed(self, text, method = 'additive'):
+        '''
+        embed the review text into k-dimensional topic vector
+
+        Input:
+            text(string) : a document to embed
+            method(string) : 'additive' or 'multiplicative'
+
+        Output:
+            the vector of length k (k = number of topics)
+        '''
         tokenizer = self.vectorizer.build_tokenizer()
         count = self.vectorizer.transform(tokenizer(text))
 

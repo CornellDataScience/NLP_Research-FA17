@@ -28,27 +28,29 @@ Node4 = {'name' : 'Italian', 'counter' : 1, 'cooccurrence' : {'Restaurants':1}}
 ## Documentation
 #### CategoryNode class
 ##### Parameters:
-*c (str)* : The name of this object  
-*counter (int)* : The number of times the name above appeared in a sequence  
-*cooccurrence (dict)* : The dictionary that maps the co-occurred names to the frequency of the co-occurrence  
+- *c (str)* : The name of this object  
+
+- *counter (int)* : The number of times the name above appeared in a sequence  
+
+- *cooccurrence (dict)* : The dictionary that maps the co-occurred names to the frequency of the co-occurrence  
 ##### Methods:
-*add_coocurence(clist)* : Add clist to the cooccurrence dictionary
+- *add_coocurence(clist)* : Add clist to the cooccurrence dictionary
 
 #### CategoryMap class
 ##### Parameters:
-*categories (dict)* : The dictionary that maps the name of item in the network to the Node object
+- *categories (dict)* : The dictionary that maps the name of item in the network to the Node object
 
 ##### Methods:
 
-*build_graph(seq)* : Build a graph from the list of sequence
+- *build_graph(seq)* : Build a graph from the list of sequence
 
-*observe(clist)* : Add 1 sequence to the network 
+- *observe(clist)* : Add 1 sequence to the network 
 
-*display_top_n(n)* : print n nodes in a decreasing order of appearance 
+- *display_top_n(n)* : print n nodes in a decreasing order of appearance 
 
-*get_subcategories(c)* : get the list of sub categories for c 
+- *get_subcategories(c)* : get the list of sub categories for c 
 
-*shared_categories(c1, c2, sub = False)* : get the list of shared categories between c1 and c2. if sub = True, then only returns subcategories
+- *shared_categories(c1, c2, sub = False)* : get the list of shared categories between c1 and c2. if sub = True, then only returns subcategories
 
 ## Example
 ```python
