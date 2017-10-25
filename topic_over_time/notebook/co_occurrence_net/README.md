@@ -3,9 +3,7 @@
 ## Introduction
 Business tag co-occurrence analysis for [Yelp Dataset Challenge Round 10](https://www.yelp.com/dataset/challenge).
 
-<p align = 'center'>
 ![tag net](https://camo.githubusercontent.com/d7b97d7c0873e949f827918763174efcca6c4a5f/687474703a2f2f64336a732e6f72672f65782f666f7263652e706e67)
-</p>
 
 This is a wrapper class to help analyze the co-occurrence of business category tags to determine hierarchical relationship between tags.
 
@@ -43,9 +41,13 @@ Node4 = {'name' : 'Italian', 'counter' : 1, 'cooccurrence' : {'Restaurants':1}}
 ##### Methods:
 
 *build_graph(seq)* : Build a graph from the list of sequence
-*observe(clist)* : Add 1 sequence to the network
-*display_top_n(n)* : print n nodes in a decreasing order of appearance
-*get_subcategories(c)* : get the list of sub categories for c
+
+*observe(clist)* : Add 1 sequence to the network 
+
+*display_top_n(n)* : print n nodes in a decreasing order of appearance 
+
+*get_subcategories(c)* : get the list of sub categories for c 
+
 *shared_categories(c1, c2, sub = False)* : get the list of shared categories between c1 and c2. if sub = True, then only returns subcategories
 
 ## Example
@@ -69,6 +71,6 @@ G.display_top_n(10)
 # get the list of sub categories for 'Chinese' tag
 sub_chinese = G.get_subcategories('Chinese')
 # get the list of shared sub categories between 'Italian' and 'Chinese'
-shared_sub = G.shared_categories('Chinese', 'Italian', sub = True)
+shared_sub = G.shared_categories('Chinese', 'Italian', sub = True) 
 
 ```
