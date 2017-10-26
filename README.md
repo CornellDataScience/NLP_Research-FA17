@@ -13,7 +13,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
   (blurb)    
 
-* [**Local Elites in Yelp**](/local-elites)
+* [**Local Elites in Yelp**](/local-elites)   
   **Members:**     
   (blurb)  
 
