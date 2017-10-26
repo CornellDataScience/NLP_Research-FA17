@@ -3,7 +3,7 @@
 ## Introduction
 We are a student-led research team from [Cornell Data Science ](https://datascience.engineering.cornell.edu/index.html)(CDS), working on Natural Language Processing projects under [Prof. Thorsten Joachims](http://www.cs.cornell.edu/people/tj/). This semester, we are participating in the [Yelp Dataset Challenge](https://www.yelp.com/dataset/challenge). You can visit the subteam folders to see our individual work.
 
-## Subteam
+## Subteams
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)  
    (blurb)  
@@ -19,7 +19,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
   (blurb)  
-  Members:
+  Members: Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20) 
 
 ## Publications
 
