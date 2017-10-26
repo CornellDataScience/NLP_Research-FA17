@@ -7,15 +7,15 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)  
    (blurb)  
-   Members:  
+   **Members:**  
 
 * [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)   
   (blurb)  
-  Members: Kenta Takatsu (CS '19), Caroline Chang (CS '20)
+  **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)
 
 * [**Local Elites in Yelp**](/local-elites)
   (blurb)  
-  Members:  
+  **Members:**  
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
   We are seeking to modify the neural style transfer algorithm proposed by [Gatys et. al.](https://arxiv.org/abs/1508.06576) to make it applicable to text. Our goal is to devise an algorithm that is able to transfer the writing style of one review onto the content of another.  
