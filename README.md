@@ -19,7 +19,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
   We are seeking to modify the neural style transfer algorithm proposed by [Gatys et. al.](https://arxiv.org/abs/1508.06576) to make it applicable to text. Our goal is to devise an algorithm that is able to transfer the writing style of one review onto the content of another.  
-  Members: Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20) 
+  **Members:** Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20) 
 
 ## Publications
 
