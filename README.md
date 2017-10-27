@@ -15,7 +15,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 * [**Local Elites in Yelp**](/local-elites)   
   **Members:**     
-  (blurb)  
+  The objective of the project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users.  
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
   **Members:** Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20)   
