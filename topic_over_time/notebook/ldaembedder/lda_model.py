@@ -67,7 +67,7 @@ class LDAembedder(object):
         Output:
             the vector of length k (k = number of topics)
         '''
-        tokenizer = self.vectorizer.build_tokenizer()
+        tokenizer = self.vectorizer.build_analyzer()
         count = self.vectorizer.transform(tokenizer(text))
 
         dirich = self.lda_model.transform(count)
