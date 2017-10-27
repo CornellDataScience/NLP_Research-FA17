@@ -7,8 +7,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
    **Members:** Travis Yang (CS '20), Xuwen Shen (STAT '18) 
-   The objective of the project is to learn the hidden dimensions behind the overall ratings based on text reviews. 
-
+   
 * [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
   (blurb)    
