@@ -14,7 +14,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
   (blurb)    
 
 * [**Local Elites in Yelp**](/local-elites)   
-  **Members:**     
+  **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
   The objective of the project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users.  
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
