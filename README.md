@@ -6,14 +6,15 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 ## Subteams
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
-   **Members:** Travis Yang (CS '20), Xuwen Shen (STAT '18) 
+   **Members:** Travis Yang (CS '20), Xuwen Shen (STAT '18)   
+   The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
    
 * [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
   (blurb)    
 
 * [**Local Elites in Yelp**](/local-elites)   
-  **Members:**     
+  **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
   The objective of the project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users.  
 
 * [**Neural Style Transfer For Text**](/dl-style-transfer)   
