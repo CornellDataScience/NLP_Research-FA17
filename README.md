@@ -23,4 +23,4 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 ## Publications
 
-Coming Soon !
+Coming Soon!
