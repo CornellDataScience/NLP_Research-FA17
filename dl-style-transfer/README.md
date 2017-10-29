@@ -2,7 +2,7 @@
 
 **Members:** [Luca Leeser](https://github.com/ll698) (INFO '18), [Yuji Akimoto](https://github.com/yujiakimoto) (ORIE '19), [Ryan Butler](https://github.com/TheButlah) (CS '19), [Cameron Ibrahim](https://github.com/cai29) (ORIE '20)    
 
-Neural Style Transfer is a technique conventionally used to stylize images, introduced by Gatys et. al. in 2015. It was observed that due to the layered structure of Convolutional Neural Networks, later layers in the network produce feature representations of the content of the image, while correlations between features give a good representation of artistic style. Using a loss function with a content term and a style term, this algorithm is able to iteratively produce an image that combines the content of one image with the style of another.    
+Neural Style Transfer is a technique conventionally used to stylize images, introduced by [Gatys et. al.](https://arxiv.org/abs/1508.06576) in 2015. It was observed that due to the layered structure of Convolutional Neural Networks, later layers in the network produce feature representations of the content of the image, while correlations between features give a good representation of artistic style. Using a loss function with a content term and a style term, this algorithm is able to iteratively produce an image that combines the content of one image with the style of another.    
 
 Content Image              |  Style Image              | Mixed Image
 :-------------------------:|:-------------------------:|:-------------------------:
