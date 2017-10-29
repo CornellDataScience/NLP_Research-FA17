@@ -1,6 +1,9 @@
 import h5py
 import numpy as np
 
+# A file to convert the cifar10vgg.h5 preset weights
+# to a numpy representation
+
 f = h5py.File("cifar10vgg.h5", "r+")
 
 layer_labels = f.attrs['layer_names']
