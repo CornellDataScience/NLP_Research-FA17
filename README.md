@@ -6,7 +6,7 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 ## Subteams
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
-   **Members:** Xinzhe Yang (CS '20), Xuwen Shen (STAT '18)   
+   **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
    The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
    
 * [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
