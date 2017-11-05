@@ -1,10 +1,10 @@
 
 from __future__ import print_function
 import keras
-from keras.datasets import mnist
+from keras.datasets import mnist, cifar10
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Lambda
-from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D, dot
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
 import numpy as np
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 batch_size = 256
-epochs = 20
+epochs = 3
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -44,20 +44,23 @@ print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
 
-def loss(y_true, y_pred):
+def loss(y_true, y_pred, alpha=1.0, epsilon = 0.0001):
     y_true_rev = K.reverse(y_true,0)
     y_pred_rev = K.reverse(y_pred,0)
     b = K.equal(y_true, y_true_rev)
 
+    #equal = K.mean(K.sqrt(2. - (2 * K.sum(((y_pred - y_pred_rev)**2), axis=1))), axis=1)
+    euc_distance = K.sqrt(K.sum(K.square(y_pred - y_pred_rev), axis=1)) ** 2
+    euc_distance = K.expand_dims(euc_distance, 1)
+    inverse_euc_distance = alpha / (euc_distance + epsilon)
 
-    equal = K.mean(K.square(y_pred - y_pred_rev), axis=1)
-    equal = K.expand_dims(equal, 1)
-    not_equal = .1 / ((equal + 0.0001)**2)
+    l2_regularizer = K.sum(K.square(y_pred), axis=1)
+    l2_regularizer = K.expand_dims(l2_regularizer, 1)
 
-    l2_regularizer = K.mean(K.square(y_pred), axis=1)
-    l2_regularizer = K.expand_dims(equal, 1)
+    cos_similarity = dot([y_pred,y_pred_rev], 1, True)
+    inverse_cos_similarity = 1 / cos_similarity
 
-    return tf.where(b, equal, not_equal) + (0.01 * (1 / l2_regularizer))
+    return tf.where(b, cos_similarity, inverse_cos_similarity) + (0.1 * (1 / (l2_regularizer + epsilon)))
 
 
 # convert class vectors to binary class matrices
@@ -106,6 +109,8 @@ vis_data = TSNE(n_components=2).fit_transform(x_preds[i, :])
 
 vis_x = vis_data[:, 0]
 vis_y = vis_data[:, 1]
+#y_test = y_test[:, 0] -1
+print(y_test)
 
 plt.scatter(vis_x, vis_y, c=y_test[i], cmap=plt.cm.get_cmap("jet", 10), s=20)
 plt.colorbar(ticks=range(10))
