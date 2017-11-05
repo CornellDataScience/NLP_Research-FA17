@@ -6,12 +6,12 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 ## Subteams
 
 * [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
-   **Members:** Xinzhe Yang (CS '20), Xuwen Shen (STAT '18)   
+   **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
    The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
    
 * [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
-  (blurb)    
+  This project has two components: developing star-prediction system to better assess business performance using different types of classifiers and exploring topic-based tag matching where we remove ambiguous tags and even extract implicit business traits. 
 
 * [**Local Elites in Yelp**](/local-elites)   
   **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
@@ -23,4 +23,4 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 
 ## Publications
 
-Coming Soon !
+Coming Soon!
