@@ -18,6 +18,8 @@ The overarching goal of this project is to develop a star-rating prediction syst
 
 - [Semantic Scan: Detecting Subtle, Spatially Localized Events in Text Streams](https://arxiv.org/pdf/1602.04393.pdf)
 
+- [Dynamic Topic Modeling](http://www.cs.columbia.edu/~blei/papers/BleiLafferty2006a.pdf)
+
 # Topic-based Semantic Matching for Overlapping Business Tags
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/SocialNetworkAnalysis.png" width="400">
