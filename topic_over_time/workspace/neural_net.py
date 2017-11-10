@@ -18,6 +18,9 @@ def gen_data(ids):
     return np.array(out)
 
 def one_hot(stars):
+    '''
+    build one hot encoding for the star rating
+    '''
     res = []
     for s in stars:
         out = np.array([0.0]*5)
@@ -26,6 +29,12 @@ def one_hot(stars):
     return np.array(res)
 
 def one_hot_three(stars):
+    '''
+    build a 3 class encoding for the easier learning
+    0: 1 star
+    1: 2-4 stars
+    2: 5 stars
+    '''
     res = []
     for s in stars:
         out = np.array([0.0]*3)
@@ -80,9 +89,10 @@ def build_model(x, input_size, hidden, out_size):
         prev = i
 
     # build an output layer
+    embedding_in = activation
     out = output_layer(activation, hidden[-1], out_size, 'output')
 
-    return out
+    return out, embedding_in
 
 
 if __name__ == '__main__':
@@ -91,6 +101,7 @@ if __name__ == '__main__':
 
     lda =  models.LdaModel.load('gensim/lda.model')
     dictionary = corpora.Dictionary.load('gensim/chinsese_dict.dict')
+
     model = Gensimembedder(model = lda, dictionary = dictionary)
 
     case_review = reviews[reviews['business_id'] == 'yfxDa8RFOvJPQh0rNtakHA']
@@ -104,8 +115,13 @@ if __name__ == '__main__':
 
     x = tf.placeholder(tf.float32, shape = [None, 128], name = 'input_topic') # number of topics
     y = tf.placeholder(tf.float32, shape = [None, 3], name = 'softmax') # 5 stars
+
     learning_rate = 0.05
-    out = build_model(x, 128, [100, 100], 3) # shape of (?, 5)
+    hidden_layer = [100, 80, 60]
+
+    embedded_size = hidden_layer[-1]
+
+    out, embedding_in = build_model(x, 128, hidden_layer, 3) # shape of (?, 5)
 
     # loss
     with tf.name_scope("loss"):
@@ -121,14 +137,34 @@ if __name__ == '__main__':
 
 
 
-    training_epoch = 50000
+    training_epoch = 150000
 
 
     with tf.Session() as sess:
         summ = tf.summary.merge_all()
-        writer = tf.summary.FileWriter("tmp/log/1")
+
+        embedding = tf.Variable(tf.zeros([1000, embedded_size]), name = 'embedding')
+        assignment = embedding.assign(embedding_in)
+        saver = tf.train.Saver()
+
+        writer = tf.summary.FileWriter("tmp/log/2")
         writer.add_graph(sess.graph)
         sess.run(tf.global_variables_initializer())
+
+        config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
+        embedding_config = config.embeddings.add()
+        embedding_config.tensor_name = embedding.name
+
+        with open("labels.tsv",'w') as f:
+            f.write("Index\tLabel\n")
+            for index,label in enumerate(one_hot_star[:1000]):
+                label = int(np.nonzero(label)[0][0]+1)
+
+                f.write("%d\t%d\n" % (index, label))
+        embedding_config.metadata_path = "labels.tsv"
+
+        tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
+
 
         for epoch in range(training_epoch):
 
@@ -141,11 +177,14 @@ if __name__ == '__main__':
                 s = sess.run(summ, feed_dict = {x:embed_train[r:r+10], y:one_hot_star[r:r+10]})
                 writer.add_summary(s,epoch)
             if epoch % 5000 == 0:
-                [accuracy] = sess.run([correct], feed_dict = {x:embed_train[r:r+10], y:one_hot_star[r:r+10]})
+                [accuracy] = sess.run([correct], feed_dict = {x:embed_train[0:10], y:one_hot_star[0:10]})
                 print ('%.2f' % accuracy)
+            if epoch % 500 == 0:
+                sess.run(assignment, feed_dict={x: embed_train[:1000], y: one_hot_star[:1000]})
+                saver.save(sess, "tmp/log/model.ckpt", epoch)
             sess.run(opt, feed_dict = {x:x_in, y:y_out})
 
         pred = tf.nn.softmax(out)  # Apply softmax to logits
         # Calculate accuracy
-
+        print (len(embed_test))
         print("Accuracy:", sess.run(correct, feed_dict = {x: embed_test, y: one_hot_star_test}))
