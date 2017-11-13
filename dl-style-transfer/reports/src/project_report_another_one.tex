@@ -1,0 +1,114 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Neural Style Transfer on Text\\Project Report One}
+
+\author{Yuji Akimoto, Ryan Butler, Cameron Ibrahim, Luca Leeser}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+
+The exploratory period of this project is quickly coming to a close, and we're ramping up our 
+effort to get definite results. At this time, we are likely going to be using a CNN based
+architecture, in collaboration with competitive layers - either integrated into the layers of the CNN themselves,
+or added to the end of the network, as in the style of the Fully Connected Nets commonly added to the end of CNN
+architectures. Additionally, we are currently putting together a dataset of alternative text sources, to address
+our need for more distinct styles for experiment purposes. We will be training an initial CNN architecture later
+today.
+
+
+\section{Introduction}
+
+Our current research has moved into a more experimental stage, as we begin to train the inital models we have created. These experiments will be
+use a 10 book dataset of distinct styles. The hope is that this will allow us to more easily determine success and failure. Failure here would 
+render our model unviable for use with Yelp
+
+
+\section{Methods and Results}
+
+We are currentlly in the process of training our initial models to begin experiments. Loss function has shown improvement. Created a 10 book dataset of sentences
+for training uses.
+
+\section{Individual Work}
+
+\begin{description}
+
+	\item [Yuji Akimoto]
+		Improved an initial CNN based architecture for text representation. Has yet to be trained. 
+
+	\item [Ryan Butler]
+		Further research into KATE, Discrete Autoencoders, ResNet, and Inception/Google to search
+		for methods we may be interested in incorporating into our model.
+
+	\item [Cameron Ibrahim]
+		Assembling the dataset of a number of books pulled from Project Gutenberg. Training Yuji's model. Generated word embeddings for dataset.
+
+	\item [Luca Leeser]
+		Further refined the facenet L2 based loss function for use with text.
+
+\end{description}
+
+\section{Further Studies}
+
+In the event of total failure of our models, we will pivot to trying to explain exactly \emph{why} our methods have not worked. This in itself would make up an interesting research topic, and would easily fill the paper.
+\section{References}
+
+\begin{thebibliography}{9}
+	\bibitem{Neural Style}
+	Leon A. Gatys, Alexander S. Ecker, Matthias Bethge.
+	\textit{A Neural Algorithm of Artistic Style}.
+	CoRR, 2015.
+
+	\bibitem{Style Transfer Summary}
+	Yongcheng Jing, Yezhou Yang, Zunlei Feng, Jingwen Ye, Mingli Song.
+	\textit{Neural Style Transfer: A Review}.
+	CoRR, 2017.
+
+	\bibitem{Generative models}
+	Justin Johnson, Alexandre Alahi, Fei-Fei Li.
+	\textit{Perceptual Losses for Real-Time Style Transfer and Super-Resolution}.
+	Stanford University.
+
+	\bibitem{Markovian GANs}
+	Chuan Li, Michael Wand.
+	\textit{Precomputed Real-Time Texture Synthesis with Markovian Generative Adversarial Networks}.
+	CoRR, 2016.
+
+	\bibitem{Writing Style Conversion}
+	Se Wong Jang, Jesik Min, Mark Kwon.
+	\textit{Writing Style Conversion using Neural Machine Translation}.
+	Stanford University.
+
+	\bibitem{Text style transfer}
+	Tianxiao Shen, Tao Lei, Regina Barzilay, Tommi Jaakkola.
+	\textit{Style Transfer from Non-Parallel Text by Cross-Alignment}.
+	CoRR, 2017.
+
+	\bibitem{Autoencoder}
+	Barak Oshri, Nishith Khandwala.
+	\textit{There and Back Again: Autoencoders for Textual Reconstruction}.
+	Stanford University.
+
+	\bibitem{KATE}
+	Yu Chen, Mohammed J. Zaki.
+	\textit{KATE: K-Competitive Autoencoder for Text}. Rensselaer Polytechnic Institute.
+	
+	\bibitem{Shallow-CNN}
+	Yoon Kim.
+	\textit{Convolutional Neural Networks for Sentence Classification}. CoRR, 2014.
+
+\end{thebibliography}
+
+
+\end{document}
