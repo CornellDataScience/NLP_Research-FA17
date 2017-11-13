@@ -9,6 +9,7 @@ from gensim import corpora, models, similarities
 from gensim.parsing.preprocessing import STOPWORDS
 import nltk
 import numpy as np
+import pickle
 
 class TextEmbedder(object):
     def __init__(self, **kwargs):
@@ -151,7 +152,7 @@ class TextEmbedder(object):
             print ('Load LDA model and dictionary')
             return None
 
-     def user_tfidf_embed(self, text, user_id, alpha = 0.5, minimum_probability = 0.0):
+    def user_tfidf_embed(self, text, user_id, alpha = 0.5, minimum_probability = 0.0):
         '''
         embed the text with tf-idf of the topic values for each user
         This will scale the embedding by penalizing frequently mentioned
@@ -159,7 +160,7 @@ class TextEmbedder(object):
         '''
         # for now not allowing this function without loading idf
         if self.trained and self.user_idf:
-            tf = self.augmented_embed_sent(text, alpha, minimum_probability)
+            tf = self.augmented_embed_text(text, alpha, minimum_probability)
             idf = self.user_idf_dict[user_id]
             out = np.multiply(tf, idf)
             if sum(out) == 0.0:
@@ -178,7 +179,7 @@ class TextEmbedder(object):
         '''
         # for now not allowing this function without loading idf
         if self.trained and self.business_idf:
-            tf = augmented_embed_sent(text, alpha, minimum_probability)
+            tf = self.augmented_embed_text(text, alpha, minimum_probability)
             idf = self.business_idf_dict[business_id]
             out = np.multiply(tf, idf)
             if sum(out) == 0.0:
@@ -200,7 +201,7 @@ class TextEmbedder(object):
         '''
         # for now not allowing this function without loading idf
         if self.trained and self.business_idf and self.user_idf:
-            tf = augmented_embed_sent(text, alpha, minimum_probability)
+            tf = self.augmented_embed_text(text, alpha, minimum_probability)
             bidf = self.business_idf_dict[business_id]
             uidf = self.user_idf_dict[user_id]
             out = np.multiply(np.multiply(tf, uidf), bidf)
@@ -216,18 +217,26 @@ class TextEmbedder(object):
 if __name__ == '__main__':
     dictionary = corpora.Dictionary.load('../workspace/gensim/chinsese_dict.dict')
     model =  models.LdaModel.load('../workspace/gensim/lda.model')
-    model = TextEmbedder(model = model, dictionary = dictionary)
-    sample = "This review is based upon consistency of flavor and great customer service.\
-      We came and there was an unknown issue that required a 25 minute wait for food.  \
-      The employee notified us, and although hesitant, we decided to stay.  \
-      We have been here numerous times before in the past years so we are familiar with this location.  \
-      The employee was apologetic and gave us a free drink.  \
-      That was a simple gesture but rarely do you see decent customer service anymore.  \
-      We received our food and had an issue with an incorrect order.  \
-      It was explained and the issue was resolved quickly.  They gave us a free appetizer.  \
-      We do not expect perfection, nor free food.  \
-      This restaurant cares for customers and works to provide a positive experience.  \
-      We would return again because they have good food and they care.  \
-      That is a rarity in today's restaurant culture.  Kudos to the manager for creating this culture. \
-      Ordered- fried rive and Tofu, edamame, won ton soup, dynamite chx, and Thai curry."
+
+    with open('u_idf.pickle', 'rb') as f:
+        uidf_data = pickle.load(f)
+
+
+    model = TextEmbedder(model = model, dictionary = dictionary, user_idf = uidf_data)
+
+    user1 = 'CxDOIDnH8gp9KXzpBHJYXw'
+    business = 'gtcsOodbmk4E0TulYHnlHA'
+
+    sample = "Bar Crawl #1:  Beau's Kissmeyer Nordic Pale Ale & St Bernardus Abt 12\
+    \n\nHappy Hour Everyday till 7 pm! $2 off drafts and bottles/cans. Sweet!\
+    \n\nOf course I have to start off with a pint: Beau's Kissmeyer Nordic Pale Ale ($5.50 with HH specials!) \
+    and my Yelp friend with a can of Howe Sound Lager ($4.5 with HH Special). \
+    And of course if you prefer some exquisite import: A bottle of St Bernardus Abt 12 ($28).\
+    \n\nThe interior is dark, dim and cozy. I like how Northwood is a coffee/beer/cocktail drinking \
+    place as that means I can hang out here the whole day. \
+    \n\nToo bad they were out of the 8oz Cold Brew to go. \
+    I guess I have to come back soon to try out their cocktails and coffee! And free WIFI!! \
+    Oh that means I can even yelp a bit!"
+
     print (model.augmented_embed_text(sample))
+    print (model.user_tfidf_embed(sample, user1))
