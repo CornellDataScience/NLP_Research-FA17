@@ -49,6 +49,9 @@ def one_hot_three(stars):
 
 
 def layer(input_data, size_in, size_out, name):
+    '''
+    Implement tensor
+    '''
     with tf.name_scope(name):
         # weight as random normal variables
         w = tf.Variable(tf.random_normal([size_in, size_out]), name = 'W')
@@ -65,6 +68,9 @@ def layer(input_data, size_in, size_out, name):
 
 
 def output_layer(input_data, size_in, size_out, name):
+    '''
+    output tensor
+    '''
     with tf.name_scope(name):
         # weight as random normal variables
         w = tf.Variable(tf.random_normal([size_in, size_out]), name = 'W')
@@ -81,8 +87,34 @@ def output_layer(input_data, size_in, size_out, name):
 
 
 def build_model(x, input_size, hidden, out_size):
+    '''
+    implement a fully connected model
+    '''
     prev = input_size
     activation = x
+    # build a series of hidden layers
+    for name,i in enumerate(hidden):
+        activation = layer(activation, prev, i, 'hiddenlayer-'+str(name))
+        prev = i
+
+    # build an output layer
+    embedding_in = activation
+    out = output_layer(activation, hidden[-1], out_size, 'output')
+
+    return out, embedding_in
+
+def build_model_with_gate(x, gate_dimention ,input_size, hidden, out_size):
+    '''
+    implement a filter gate before input
+    '''
+    # implement random filter here
+    gate = np.zeros(input_size)
+    i = random.sample(set(np.arange(input_size)), gate_dimention)
+    gate[[i]] = 1.0
+
+    prev = input_size
+    activation = tf.multiply(x, gate)
+
     # build a series of hidden layers
     for name,i in enumerate(hidden):
         activation = layer(activation, prev, i, 'hiddenlayer-'+str(name))
@@ -105,23 +137,23 @@ if __name__ == '__main__':
     model = Gensimembedder(model = lda, dictionary = dictionary)
 
     case_review = reviews[reviews['business_id'] == 'yfxDa8RFOvJPQh0rNtakHA']
-    id_train, id_test, star_train, star_test = train_test_split(case_review['review_id'], case_review['stars'], test_size=0.33)
+    id_train, id_test, star_train, star_test = train_test_split(case_review['review_id'], case_review['stars'], test_size=0.2)
 
     embed_train = gen_data(id_train)
     embed_test = gen_data(id_test)
 
-    one_hot_star = one_hot_three(star_train)
-    one_hot_star_test = one_hot_three(star_test)
+    one_hot_star = one_hot(star_train)
+    one_hot_star_test = one_hot(star_test)
 
     x = tf.placeholder(tf.float32, shape = [None, 128], name = 'input_topic') # number of topics
-    y = tf.placeholder(tf.float32, shape = [None, 3], name = 'softmax') # 5 stars
+    y = tf.placeholder(tf.float32, shape = [None, 5], name = 'softmax') # 5 stars
 
-    learning_rate = 0.05
-    hidden_layer = [100, 80, 60]
+    learning_rate = 0.01
+    hidden_layer = [100, 80]
 
     embedded_size = hidden_layer[-1]
 
-    out, embedding_in = build_model(x, 128, hidden_layer, 3) # shape of (?, 5)
+    out, embedding_in = build_model_with_gate(x, 100, 128, hidden_layer, 5) # shape of (?, 5)
 
     # loss
     with tf.name_scope("loss"):
@@ -137,7 +169,7 @@ if __name__ == '__main__':
 
 
 
-    training_epoch = 150000
+    training_epoch = 100000
 
 
     with tf.Session() as sess:
@@ -147,7 +179,7 @@ if __name__ == '__main__':
         assignment = embedding.assign(embedding_in)
         saver = tf.train.Saver()
 
-        writer = tf.summary.FileWriter("tmp/log/2")
+        writer = tf.summary.FileWriter("tmp/log/3")
         writer.add_graph(sess.graph)
         sess.run(tf.global_variables_initializer())
 
