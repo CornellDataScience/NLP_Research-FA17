@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 import tensorflow as tf
 import numpy as np
+import math
 
 
 def batch_norm(input, phase_train, decay=0.9, custom_inits=None, scope='BN'):
@@ -275,3 +276,66 @@ def xavier_initializer(shape, uniform=True, dtype=tf.float32, name='Xavier-Initi
     else:
         stddev = tf.sqrt(1.3 / n_avg)  # This corrects for the fact that we are using a truncated normal distribution.
         return tf.truncated_normal(shape, stddev=stddev, dtype=dtype, name=name)
+
+
+def k_sparse_transform(input_volume, k=2, method=1, name="K-Sparse"):
+    """
+    Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
+    are declared the "winners". The others lose and are set to zero.
+
+    Args:
+        input_volume: The 3d tensor to be transformed
+        k: the number of winners to declare
+        method: the type of norm to calculate
+        name: the name of the returned tensor
+    Returns:
+        A tensor the same shape as input_volume with the top k matrices preserved and the rest set to zero
+    """
+    # Calculate the norms for all Activation maps in the volume using method
+    norms = tf.norm(input_volume, ord=method, axis=(1, 2))
+    z = tf.zeros(tf.shape(input_volume))
+    # Get the top k indices
+    _, top = tf.nn.top_k(norms, k=k)
+    # Mask indices not in the top k
+    top_mask = [i in top for i in range(tf.shape(input_volume)[-1])]
+    # Set not top values to zero. Tile 1D mask to three dimensions
+    return tf.where(tf.tile(top_mask, tf.concat(tf.shape(input_volume)[:-1], [1])), input_volume, z, name=name)
+
+
+def k_competitive_activator(input_volume, alpha=0, k=2, method=1, name="K-Competetive"):
+    """
+    Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
+    are declared the "winners". The others lose and are set to zero. An amplification term is added to the winners
+    proportional to alpha.
+
+    Args:
+        input_volume: The 3d tensor to be transformed
+        k: the number of winners to declare
+        alpha: Coefficient on the amplification term
+        method: the type of norm to calculate
+        name: the name of the returned tensor
+    Returns:
+        A tensor the same shape as input_volume with the top k matrices amplified and the rest set to zero
+    """
+    #Take the tan of the volume
+    tan_vol = tf.tanh(input_volume)
+    norms = tf.norm(tan_vol, ord=method, axis=(1, 2))
+    tans = tf.tanh(norms)
+    pos = tf.where(tf.greater(tans, 0), tans, tf.zeros(tf.shape(tans)))
+    neg = tf.where(tf.less(tans, 0), tans, tf.zeros(tf.shape(tans)))
+
+    _, top_pos = tf.nn.top_k(pos, k = math.ceil(k/2))
+    _, top_neg = tf.nn.top_k(-neg, k = math.floor(k/2))
+
+    top_pos_mask = [i in top_pos for i in range(tf.shape(input_volume)[-1])]
+    top_neg_mask = [i in top_neg for i in range(tf.shape(input_volume)[-1])]
+
+    pos_vol = tf.where(tf.tile(top_pos_mask, tf.concat(tf.shape(tan_vol)[:-1], [1])), tan_vol, z)
+    neg_vol = tf.where(tf.tile(top_neg_mask, tf.concat(tf.shape(tan_vol)[:-1], [1])), tan_vol, z)
+
+    pos_adder = tf.reduce_sum(pos_vol, axis=2)
+    neg_adder = tf.reduce_sum(neg_vol, axis=2)
+
+    return tf.add(pos_vol + alpha * pos_adder, neg_vol + alpha * neg_adder, name=name)
+
+
