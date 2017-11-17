@@ -233,7 +233,7 @@ class TextEmbedder(object):
         if self.trained and self.business_tfidf:
             tf = self.augmented_embed_text(text, alpha, minimum_probability)
             btfidf = self.business_tfidf_dict[business_id]
-            out = np.multiply(np.multiply(tf), btfidf)
+            out = np.multiply(tf, btfidf)
             if sum(out) == 0.0:
                 print ('Business has too low tfidf')
                 return np.array([0.]*128)

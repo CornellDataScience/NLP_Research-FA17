@@ -233,7 +233,7 @@ class TextEmbedder(object):
         if self.trained and self.business_tfidf:
             tf = self.augmented_embed_text(text, alpha, minimum_probability)
             btfidf = self.business_tfidf_dict[business_id]
-            out = np.multiply(np.multiply(tf), btfidf)
+            out = np.multiply(tf, btfidf)
             if sum(out) == 0.0:
                 print ('Business has too low tfidf')
                 return np.array([0.]*128)
@@ -244,17 +244,20 @@ class TextEmbedder(object):
 
 
 if __name__ == '__main__':
-    dictionary = corpora.Dictionary.load('../workspace/gensim/chinsese_dict.dict')
-    model =  models.LdaModel.load('../workspace/gensim/lda.model')
+    dictionary = corpora.Dictionary.load('../data/gensim/chinsese_dict.dict')
+    model =  models.LdaModel.load('../data/gensim/lda.model')
 
-    with open('u_idf.pickle', 'rb') as f:
+    with open('../data/u_idf.pickle', 'rb') as f:
         uidf_data = pickle.load(f)
 
-    with open('b_idf.pickle', 'rb') as f:
+    with open('../data/b_idf.pickle', 'rb') as f:
         bidf_data = pickle.load(f)
 
+    with open('../data/b_tfidf.pickle', 'rb') as f:
+        btfidf_data = pickle.load(f)
 
-    model = TextEmbedder(model = model, dictionary = dictionary, user_idf = uidf_data, business_idf = bidf_data)
+
+    model = TextEmbedder(model = model, dictionary = dictionary, user_idf = uidf_data, business_idf = bidf_data, business_tfidf = btfidf_data)
 
     user1 = 'CxDOIDnH8gp9KXzpBHJYXw'
     business = 'gtcsOodbmk4E0TulYHnlHA'
@@ -274,3 +277,5 @@ if __name__ == '__main__':
     print (model.user_tfidf_embed(sample, user1))
     print (model.user_tf_business_idf(sample, business))
     print (model.user_tfidf_business_idf(sample, user1, business))
+
+    print (model.augmented_tf_business_tfidf(sample, business))
