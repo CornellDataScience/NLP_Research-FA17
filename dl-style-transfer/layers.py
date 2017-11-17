@@ -302,7 +302,7 @@ def k_sparse_transform(input_volume, k=2, method=1, name="K-Sparse"):
     return tf.where(tf.tile(top_mask, tf.concat(tf.shape(input_volume)[:-1], [1])), input_volume, z, name=name)
 
 
-def k_competitive_activator(input_volume, alpha=0, k=2, method=1, name="K-Competetive"):
+def k_competitive_activator(input_volume, alpha=0, k=2, method=1, name="K-Competitive"):
     """
     Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
     are declared the "winners". The others lose and are set to zero. An amplification term is added to the winners
@@ -317,15 +317,15 @@ def k_competitive_activator(input_volume, alpha=0, k=2, method=1, name="K-Compet
     Returns:
         A tensor the same shape as input_volume with the top k matrices amplified and the rest set to zero
     """
-    #Take the tan of the volume
+    # Take the tan of the volume
     tan_vol = tf.tanh(input_volume)
     norms = tf.norm(tan_vol, ord=method, axis=(1, 2))
     tans = tf.tanh(norms)
     pos = tf.where(tf.greater(tans, 0), tans, tf.zeros(tf.shape(tans)))
     neg = tf.where(tf.less(tans, 0), tans, tf.zeros(tf.shape(tans)))
 
-    _, top_pos = tf.nn.top_k(pos, k = math.ceil(k/2))
-    _, top_neg = tf.nn.top_k(-neg, k = math.floor(k/2))
+    _, top_pos = tf.nn.top_k(pos, k=math.ceil(k/2))
+    _, top_neg = tf.nn.top_k(-neg, k=math.floor(k/2))
 
     top_pos_mask = [i in top_pos for i in range(tf.shape(input_volume)[-1])]
     top_neg_mask = [i in top_neg for i in range(tf.shape(input_volume)[-1])]
