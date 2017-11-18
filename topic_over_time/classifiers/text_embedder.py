@@ -244,20 +244,17 @@ class TextEmbedder(object):
 
 
 if __name__ == '__main__':
-    dictionary = corpora.Dictionary.load('../data/gensim/chinsese_dict.dict')
-    model =  models.LdaModel.load('../data/gensim/lda.model')
+    dictionary = corpora.Dictionary.load('../workspace/gensim/chinsese_dict.dict')
+    model =  models.LdaModel.load('../workspace/gensim/lda.model')
 
-    with open('../data/u_idf.pickle', 'rb') as f:
+    with open('u_idf.pickle', 'rb') as f:
         uidf_data = pickle.load(f)
 
-    with open('../data/b_idf.pickle', 'rb') as f:
+    with open('b_idf.pickle', 'rb') as f:
         bidf_data = pickle.load(f)
 
-    with open('../data/b_tfidf.pickle', 'rb') as f:
-        btfidf_data = pickle.load(f)
 
-
-    model = TextEmbedder(model = model, dictionary = dictionary, user_idf = uidf_data, business_idf = bidf_data, business_tfidf = btfidf_data)
+    model = TextEmbedder(model = model, dictionary = dictionary, user_idf = uidf_data, business_idf = bidf_data)
 
     user1 = 'CxDOIDnH8gp9KXzpBHJYXw'
     business = 'gtcsOodbmk4E0TulYHnlHA'
@@ -277,5 +274,3 @@ if __name__ == '__main__':
     print (model.user_tfidf_embed(sample, user1))
     print (model.user_tf_business_idf(sample, business))
     print (model.user_tfidf_business_idf(sample, user1, business))
-
-    print (model.augmented_tf_business_tfidf(sample, business))
