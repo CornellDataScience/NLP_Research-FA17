@@ -50,4 +50,6 @@ for b in books:
     print(frame.shape)
     frames.append(frame.iloc[1:, :])
 
-pd.concat(frames).reset_index().to_json("./text_sentences.json")
+frame = pd.concat(frames)
+frame = frame.reset_index()
+frame.to_json("./text_sentences.json", orient="records")
