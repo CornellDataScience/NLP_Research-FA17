@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 from gensim import corpora, models
 import pickle
 
-with open('rest_review.pickle', 'rb') as f:
-	rest_review = pickle.load(f)
-
+rest_review = pd.read_csv('rest_review.csv')
+print (rest_review)
 #preprocess
 from nltk.tokenize import RegexpTokenizer
 tokenizer = RegexpTokenizer(r'\w+')
@@ -129,13 +128,10 @@ with open('lda.pickle', 'wb') as handle:
     pickle.dump(lda, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 groupby_user = rest_review.groupby('user_id').size().reset_index(name='counts')
-with open('groupby_user.pickle', 'wb') as handle:
-    pickle.dump(groupby_user, handle, protocol=pickle.HIGHEST_PROTOCOL)
+groupby_user.to_csv()
 
-perfer_added = add_prefer_to_df(rest_review, lda, groupby_user)
-with open('perfer_added.pickle', 'wb') as handle:
-    pickle.dump(perfer_added, handle, protocol=pickle.HIGHEST_PROTOCOL)
+prefer_added = add_prefer_to_df(rest_review, lda, groupby_user)
+prefer_added.to_csv()
 
 subscore_added = add_subscore_to_df(prefer_added, lda, group)
-with open('subscore.pickle', 'wb') as handle:
-    pickle.dump(subscore_added, handle, protocol=pickle.HIGHEST_PROTOCOL)
+subscore_added.to_csv()
