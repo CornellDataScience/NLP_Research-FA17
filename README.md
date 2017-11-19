@@ -24,3 +24,9 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
 ## Publications
 
 Coming Soon!
+
+## How to get the code
+The code uses git submodules, so to properly intialize those you need the `--recurse-submodules` option. Additionally, using `--depth 1` will avoid cloning the history, making the clone faster.
+```
+git clone --recurse-submodules --depth 1 https://github.com/CornellDataScience/Yelp-FA17.git
+```
