@@ -1,4 +1,4 @@
-[submodule "dl-style-transfer/Layers"]
-	path = dl-style-transfer/Layers
+[submodule "dl_style_transfer/layers"]
+	path = dl_style_transfer/layers
 	url = https://github.com/TheButlah/Layers.git
 	branch = master
