@@ -278,7 +278,7 @@ def xavier_initializer(shape, uniform=True, dtype=tf.float32, name='Xavier-Initi
         return tf.truncated_normal(shape, stddev=stddev, dtype=dtype, name=name)
 
 
-def k_sparse_transform(input_volume, k=2, method=1, name="K-Sparse"):
+def k_competitive_activation(input_volume, phase_train, k=2, alpha = 0, epsilon=0.00001, name="K-Sparse"):
     """
     Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
     are declared the "winners". The others lose and are set to zero.
@@ -291,51 +291,24 @@ def k_sparse_transform(input_volume, k=2, method=1, name="K-Sparse"):
     Returns:
         A tensor the same shape as input_volume with the top k matrices preserved and the rest set to zero
     """
-    # Calculate the norms for all Activation maps in the volume using method
-    norms = tf.norm(input_volume, ord=method, axis=(1, 2))
-    z = tf.zeros(tf.shape(input_volume))
-    # Get the top k indices
-    _, top = tf.nn.top_k(norms, k=k)
-    # Mask indices not in the top k
-    top_mask = [i in top for i in range(tf.shape(input_volume)[-1])]
-    # Set not top values to zero. Tile 1D mask to three dimensions
-    return tf.where(tf.tile(top_mask, tf.concat(tf.shape(input_volume)[:-1], [1])), input_volume, z, name=name)
+    def train():
+        # Get the shape and element-wise absolute value of the input volume
+        shape = input_volume.shape.as_list()
+        ab = tf.abs(input_volume)
+        # Calculate the base energy by taking the reduced sum of the feature dimension
+        energy = tf.reduce_sum(ab, axis=-1)
+        # Find the top k values in the feature dimension for each spatial dimension
+        _, ind = tf.nn.top_k(ab, k)
+        # Produce and apply a mask setting the losing values to zero
+        mask = tf.reduce_sum(tf.one_hot(ind, shape[-1], on_value=1.0, off_value=0.0, dtype=tf.float32), -2)
+        royale = input_volume * mask
+        # Get the unit positions of the masked input to get a tensor of ~ 1, 0, -1
+        unit = royale / (tf.abs(royale) + epsilon)
+        # Calculate and add the energy term
+        energy_term = alpha * tf.expand_dims(energy, -1) * unit
+        return royale + energy_term
 
+    def test():
+        return input_volume
 
-def k_competitive_activator(input_volume, alpha=0, k=2, method=1, name="K-Competitive"):
-    """
-    Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
-    are declared the "winners". The others lose and are set to zero. An amplification term is added to the winners
-    proportional to alpha.
-
-    Args:
-        input_volume: The 3d tensor to be transformed
-        k: the number of winners to declare
-        alpha: Coefficient on the amplification term
-        method: the type of norm to calculate
-        name: the name of the returned tensor
-    Returns:
-        A tensor the same shape as input_volume with the top k matrices amplified and the rest set to zero
-    """
-    # Take the tan of the volume
-    tan_vol = tf.tanh(input_volume)
-    norms = tf.norm(tan_vol, ord=method, axis=(1, 2))
-    tans = tf.tanh(norms)
-    pos = tf.where(tf.greater(tans, 0), tans, tf.zeros(tf.shape(tans)))
-    neg = tf.where(tf.less(tans, 0), tans, tf.zeros(tf.shape(tans)))
-
-    _, top_pos = tf.nn.top_k(pos, k=math.ceil(k/2))
-    _, top_neg = tf.nn.top_k(-neg, k=math.floor(k/2))
-
-    top_pos_mask = [i in top_pos for i in range(tf.shape(input_volume)[-1])]
-    top_neg_mask = [i in top_neg for i in range(tf.shape(input_volume)[-1])]
-
-    pos_vol = tf.where(tf.tile(top_pos_mask, tf.concat(tf.shape(tan_vol)[:-1], [1])), tan_vol, z)
-    neg_vol = tf.where(tf.tile(top_neg_mask, tf.concat(tf.shape(tan_vol)[:-1], [1])), tan_vol, z)
-
-    pos_adder = tf.reduce_sum(pos_vol, axis=2)
-    neg_adder = tf.reduce_sum(neg_vol, axis=2)
-
-    return tf.add(pos_vol + alpha * pos_adder, neg_vol + alpha * neg_adder, name=name)
-
-
+    return tf.identity(tf.cond(phase_train, train, test), name=name)
