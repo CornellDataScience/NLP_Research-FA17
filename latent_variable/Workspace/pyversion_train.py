@@ -6,9 +6,35 @@ import json
 import matplotlib.pyplot as plt
 from gensim import corpora, models
 import pickle
+import nltk
 
+
+def load_json_to_df(datapass):
+    data = [] 
+    with open(datapass) as data_file: 
+        for f in data_file:
+            data.append(json.loads(f))
+    df = pd.DataFrame(data)
+    return df
+
+business = load_json_to_df("../../../dataset/business.json")
+review = load_json_to_df("../../../dataset/review.json")
+
+is_rest = []
+for i in business['categories']:
+    
+    if 'Restaurants' in i or 'Food' in i:
+        is_rest.append(True)
+    else:
+        is_rest.append(False)
+restaurants = business.loc[is_rest]
+
+rest_id = restaurants['business_id']
+rest_review = review.loc[review['business_id'].isin(rest_id)]
+'''
 rest_review = pd.read_csv('rest_review.csv')
 print (rest_review)
+'''
 #preprocess
 from nltk.tokenize import RegexpTokenizer
 tokenizer = RegexpTokenizer(r'\w+')
