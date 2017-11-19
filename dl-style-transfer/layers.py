@@ -278,7 +278,7 @@ def xavier_initializer(shape, uniform=True, dtype=tf.float32, name='Xavier-Initi
         return tf.truncated_normal(shape, stddev=stddev, dtype=dtype, name=name)
 
 
-def k_competitive_activation(input_volume, k=2, alpha = 0, epsilon=0.00001, name="K-Sparse"):
+def k_competitive_activation(input_volume, phase_train, k=2, alpha = 0, epsilon=0.00001, name="K-Sparse"):
     """
     Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
     are declared the "winners". The others lose and are set to zero.
@@ -291,12 +291,24 @@ def k_competitive_activation(input_volume, k=2, alpha = 0, epsilon=0.00001, name
     Returns:
         A tensor the same shape as input_volume with the top k matrices preserved and the rest set to zero
     """
-    shape = input_volume.shape.as_list()
-    ab = tf.abs(input_volume)
-    energy = tf.reduce_sum(ab, axis=-1)
-    _, ind = tf.nn.top_k(ab, k)
-    mask = tf.reduce_sum(tf.one_hot(ind, shape[-1], on_value=1.0, off_value=0.0, dtype=tf.float32), -2)
-    royale = input_volume * mask
-    unit = royale / (tf.abs(royale) + epsilon)
-    act = alpha * tf.expand_dims(energy, -1) * unit
-    return tf.add(royale, act, name=name), mask
+    def train():
+        # Get the shape and element-wise absolute value of the input volume
+        shape = input_volume.shape.as_list()
+        ab = tf.abs(input_volume)
+        # Calculate the base energy by taking the reduced sum of the feature dimension
+        energy = tf.reduce_sum(ab, axis=-1)
+        # Find the top k values in the feature dimension for each spatial dimension
+        _, ind = tf.nn.top_k(ab, k)
+        # Produce and apply a mask setting the losing values to zero
+        mask = tf.reduce_sum(tf.one_hot(ind, shape[-1], on_value=1.0, off_value=0.0, dtype=tf.float32), -2)
+        royale = input_volume * mask
+        # Get the unit positions of the masked input to get a tensor of ~ 1, 0, -1
+        unit = royale / (tf.abs(royale) + epsilon)
+        # Calculate and add the energy term
+        energy_term = alpha * tf.expand_dims(energy, -1) * unit
+        return royale + energy_term
+
+    def test():
+        return input_volume
+
+    return tf.identity(tf.cond(phase_train, train, test), name=name)
