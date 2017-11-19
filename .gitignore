@@ -1,4 +1,10 @@
-.idea/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-.DS_Store
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+*/.ipynb_checkpoints/
+
+# PyCharm IDE Files
+.idea/
