@@ -278,15 +278,17 @@ def xavier_initializer(shape, uniform=True, dtype=tf.float32, name='Xavier-Initi
         return tf.truncated_normal(shape, stddev=stddev, dtype=dtype, name=name)
 
 
-def k_competitive_activation(input_volume, phase_train, k=2, alpha = 0, epsilon=0.00001, name="K-Sparse"):
+def k_competitive_activation(input_volume, phase_train, k=2, alpha = 0, epsilon=0.00001, name="K-Competitive"):
     """
     Takes an input volume and calculates the norm of each matrix along the feature axis. The top k of these
     are declared the "winners". The others lose and are set to zero.
 
     Args:
         input_volume: The 3d tensor to be transformed
+        phase_train: A flag that tells the layer whether or not it is in the training phase
         k: the number of winners to declare
-        method: the type of norm to calculate
+        alpha: Sets the intensity of the energy parameter
+        epsilon: A small number to perturb the divisor so to avoid dividing by zero
         name: the name of the returned tensor
     Returns:
         A tensor the same shape as input_volume with the top k matrices preserved and the rest set to zero
