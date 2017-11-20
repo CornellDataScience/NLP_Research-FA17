@@ -17,10 +17,16 @@ We are a student-led research team from [Cornell Data Science ](https://datascie
   **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
   The objective of the project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users.  
 
-* ### [**Neural Style Transfer For Text**](/dl-style-transfer)   
+* ### [**Neural Style Transfer For Text**](/dl_style_transfer)   
   **Members:** Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20)   
   We are seeking to modify the neural style transfer algorithm proposed by [Gatys et. al.](https://arxiv.org/abs/1508.06576) to make it applicable to text. Our goal is to devise an algorithm that is able to transfer the writing style of one review onto the content of another.   
 
 ## Publications
 
 Coming Soon!
+
+## How to get the code
+The code uses git submodules, so to properly intialize those you need the `--recurse-submodules` option. Additionally, using `--depth 1` will avoid cloning the history, making the clone faster.
+```
+git clone --recurse-submodules --depth 1 https://github.com/CornellDataScience/Yelp-FA17.git
+```
