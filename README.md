@@ -1,17 +1,21 @@
 # CDS: NLP Research Team
 
-## Introduction
-We are a student-led research team from [Cornell Data Science ](https://datascience.engineering.cornell.edu/index.html)(CDS), working on Natural Language Processing projects under [Prof. Thorsten Joachims](http://www.cs.cornell.edu/people/tj/). This semester, we are participating in the [Yelp Dataset Challenge](https://www.yelp.com/dataset/challenge). You can visit the subteam folders to see our individual work.
+## About Us
+We are a student-led research team from [Cornell Data Science ](https://datascience.engineering.cornell.edu/index.html)(CDS), working on Natural Language Processing projects under [Prof. Thorsten Joachims](http://www.cs.cornell.edu/people/tj/). This semester, we are participating in the [Yelp Dataset Challenge](https://www.yelp.com/dataset/challenge), aiming to provide analytic insights from the raw review texts. Our final products are in the form research paper, making the use of machine learning algorithms and statistical validations. You can visit the subteam sections to see our individual work.
+
+## Achivements
+
+Coming Soon!
 
 ## Subteams
 
 * ### [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
    **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
    The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
-   
+
 * ### [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
-  This project has two components: developing star-prediction system to better assess business performance using different types of classifiers and exploring topic-based tag matching where we remove ambiguous tags and even extract implicit business traits. 
+  We are developing a stream-lined star-prediction system to better assess business performance using different types of classifiers, which accounts for the temporal trends in user review topics and the strength/weakness of business characteristics in latent space.
 
 * ### [**Local Elites in Yelp**](/local-elites)   
   **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
