@@ -36,10 +36,12 @@ Our objective is to learn hidden dimensions of behind a overall rating for a spe
 *	Ran topic model to get topics from reviews written by a user and topics from reviews on a restaurant.
 *	Combined topics we learned from the user and the restaurants as topic factors.
 *	Learn the hidden dimension of rating by minimizing the mean squared error function.
+
 ![alt text](src/pic1.png)
 
 ## Results
 
 After running a small sample of burger places in Las Vegas, our baseline method gives a mean absolute error of **0.9308** while our topic modelling method gives a mean absolute error of **0.703260**. So far, our method beats the baseline. Stay tuned for results on a larger dataset!
+
 ![alt text](src/result.png)
 
