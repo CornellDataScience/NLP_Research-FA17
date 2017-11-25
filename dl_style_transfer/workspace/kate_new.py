@@ -33,7 +33,7 @@ class Kate:
 
             with tf.variable_scope('Decoder'):
                 k1_shape = k1.shape.as_list()
-                flattened = tf.reshape(k1, [-1] + np.prod(k1_shape[1:]))
+                flattened = tf.reshape(k1, [-1, np.prod(k1_shape[1:])])
 
                 weights = var_dict['Weights']  # Use same weights from encoder
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
@@ -65,8 +65,7 @@ class Kate:
 
         Args:
             x_train:           A numpy ndarray that contains the data to train over. Should should have a shape of
-                               [batch_size, spatial_dim1, ... , spatial_dimN, channels]. Only 1<=N<=3 spatial dimensions
-                               are supported currently. These should correspond to the shape of y_train.
+                               [batch_size, features...].
             n_epochs:          The number of full passes over the provided dataset to perform until training is
                                considered to be complete.
             batch_size:        The size of the batch to use when training. Larger sizes mean a more stable loss function
