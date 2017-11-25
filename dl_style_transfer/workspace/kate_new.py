@@ -56,6 +56,23 @@ class Kate:
                     print("Model Initialized!")
 
     def train(self, x_train, n_epochs, batch_size, start_stop_info=True, progress_interval=5):
+        """Trains the model on the batch of data provided. Typically called before inference.
+
+        Args:
+            x_train:           A numpy ndarray that contains the data to train over. Should should have a shape of
+                               [batch_size, spatial_dim1, ... , spatial_dimN, channels]. Only 1<=N<=3 spatial dimensions
+                               are supported currently. These should correspond to the shape of y_train.
+            n_epochs:          The number of full passes over the provided dataset to perform until training is
+                               considered to be complete.
+            batch_size:        The size of the batch to use when training. Larger sizes mean a more stable loss function
+                               which might enable a larger value for the learning rate. However, the larger the batch,
+                               the more memory will be used and the slower the training speed will be per iteration.
+            start_stop_info:   If true, print when the training begins and ends.
+            progress_interval: If not `None`, then this is the minimum interval of time between printing the progress
+                               of the model.
+        Returns:
+            The loss value after training.
+        """
         training_size = x_train.shape[0]
 
         # Training loop for parameter tuning
@@ -84,8 +101,8 @@ class Kate:
         """Applies the model to the batch of data provided. Typically called after the model is trained.
 
         Args:
-            x_data:  A numpy ndarray of the data to apply the model to. Should have the same shape as the training data,
-                e.g. `[batch_size, sentence_length]`.
+            x_data: A numpy ndarray of the data to apply the model to. Should have the same shape as the training data,
+                    e.g. `[batch_size, sentence_length]`.
 
         Returns:
             A numpy ndarray of the data, with shape `[batch_size, sentence_length, embedding_size]`
@@ -95,9 +112,10 @@ class Kate:
 
     def save_model(self, save_path=None):
         """Saves the model in the specified file.
+
         Args:
-            save_path:  The relative path to the file. By default, it is
-                saved/KATE-Year-Month-Date_Hour-Minute-Second.ckpt
+            save_path: The relative path to the file. By default, it is
+                       saved/KATE-Year-Month-Date_Hour-Minute-Second.ckpt
         """
         with self._sess.as_default():
             print("Saving Model")
