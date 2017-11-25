@@ -38,7 +38,7 @@ class Kate:
                 weights = var_dict['Weights']  # Use same weights from encoder
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
                 scores = tf.matmul(flattened, weights) + bias  # Effectively transpose multiply
-                scores = tf.reshape(scores, k1_shape[:-1] + [vocab_size])
+                scores = tf.reshape(scores, [-1] + k1_shape[1:-1] + [vocab_size])
 
                 self._y_hat = tf.nn.softmax(scores, name='Y-Hat')
                 self._pred = tf.argmax(self._y_hat, axis=-1, name='Predicted')
