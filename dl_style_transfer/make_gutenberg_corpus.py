@@ -74,10 +74,13 @@ for b in books:
 
 frame = pd.concat(frames)
 frame.reset_index(inplace=True)
+frame['len'] = frame['text'].str.len()
 print("Total: ", frame.shape)
 mod = tf.keras.preprocessing.text.Tokenizer()
 mod.fit_on_texts(frame['text'])
 inv = dict((v,k) for k, v in mod.word_index.items())
+inv[-1] = ""
+
 
 
 def get_corpus():
@@ -111,8 +114,13 @@ def sentence_mat():
     -1 to the length of the longest sequence. Each integer in the sequence is the index corresponding to a
     particular word.
     '''
+    seqs=mod.texts_to_sequences(frame['text'])
+    # seqs = list(filter(lambda x: len(x) <= 64, seqs))
     return tf.keras.preprocessing.sequence.pad_sequences(
-        mod.texts_to_sequences(frame['text']), value=-1
+        seqs,
+        maxlen=max(map(len, seqs)),
+        value=-1,
+        padding="post"
     )
 
 def get_one_hot():
@@ -127,6 +135,13 @@ def one_hot_to_word(one_hot):
     Returns the word corresponding to a given one-hot encoded vector
     '''
     return inv[np.argmax(one_hot)]
+
+
+def seq_list_to_word(lis):
+    '''
+    Given a list containing vocab indexes, return the corresponding sentence
+    '''
+    return " ".join([inv[i] for i in lis])
 
 
 if __name__ == '__main__':
