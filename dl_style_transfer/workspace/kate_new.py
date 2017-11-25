@@ -32,9 +32,14 @@ class Kate:
                 k1 = k_comp(fc1, self._phase_train, k, alpha=alpha, scope='K-Comp1')
 
             with tf.variable_scope('Decoder'):
+                k1_shape = k1.shape.as_list()
+                flattened = tf.reshape(k1, [-1] + np.prod(k1_shape[1:]))
+
                 weights = var_dict['Weights']  # Use same weights from encoder
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
-                scores = k1 * weights + bias  # Effectively transpose multiply
+                scores = tf.matmul(flattened, weights) + bias  # Effectively transpose multiply
+                scores = tf.reshape(scores, k1_shape[:-1] + [vocab_size])
+
                 self._y_hat = tf.nn.softmax(scores, name='Y-Hat')
                 self._pred = tf.argmax(self._y_hat, axis=-1, name='Predicted')
 
