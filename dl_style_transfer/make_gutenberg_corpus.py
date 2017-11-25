@@ -67,7 +67,7 @@ for b in books:
     tree = html.fromstring(page.content)
 
     pars = tree.xpath('//p/text()')
-    b['text'] = nltk.sent_tokenize("\n".join(pars).replace("\r", ""))
+    b['text'] = nltk.sent_tokenize("\n".join(pars).replace("\r", ""))[10:-10]
     frame = pd.DataFrame(b)
     print(frame.shape)
     frames.append(frame)
