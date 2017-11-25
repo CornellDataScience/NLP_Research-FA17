@@ -2,6 +2,8 @@ from lxml import html
 import requests
 import pandas as pd
 import nltk
+import tensorflow as tf
+import numpy as np
 
 
 def book(title, author, link):
@@ -65,13 +67,67 @@ for b in books:
     tree = html.fromstring(page.content)
 
     pars = tree.xpath('//p/text()')
-    sentences = nltk.sent_tokenize("\n".join(pars).replace("\r", ""))
-    b['text'] = list(map(nltk.word_tokenize, sentences[10:-10]))
+    b['text'] = nltk.sent_tokenize("\n".join(pars).replace("\r", ""))
     frame = pd.DataFrame(b)
     print(frame.shape)
     frames.append(frame)
 
 frame = pd.concat(frames)
-frame = frame.reset_index()
+frame.reset_index(inplace=True)
 print("Total: ", frame.shape)
-frame.to_json("./text_sentences.json", orient="records")
+mod = tf.keras.preprocessing.text.Tokenizer()
+mod.fit_on_texts(frame['text'])
+inv = dict((v,k) for k, v in mod.word_index.items())
+
+
+def get_corpus():
+    '''
+    Returns the dataframe of sentence samples:
+
+    Columns: ['index', 'author', 'link', 'text', 'title']
+    '''
+    return frame
+
+def get_vocab():
+    '''
+    Returns a dict with learned words as keys and corresponding indices as values
+    '''
+    return mod.word_index
+
+def sentence_vecs(mode="count"):
+    '''
+    Returns a matrix of vector representations of each sentence in the corpus. Mode can be used
+    to specify what information is contained int the vector
+
+    mode: The information contained in each sentence vector. Default is count i.e. bag of words.
+        Other options are binary, freq, tfidf
+    '''
+    return mod.texts_to_matrix(frame['text'], mode)
+
+
+def sentence_mat():
+    '''
+    Returns integer sequences representing each sentence in the corpus. These sequences are padded with
+    -1 to the length of the longest sequence. Each integer in the sequence is the index corresponding to a
+    particular word.
+    '''
+    return tf.keras.preprocessing.sequence.pad_sequences(
+        mod.texts_to_sequences(frame['text']), value=-1
+    )
+
+def get_one_hot():
+    '''
+    Returns matrices corresponding to the one-hot encoding representations of sentences. These are padded
+    with empty vectors to the length of the longest sentence.
+    '''
+    return tf.one_hot(sentence_mat(), len(mod.word_index))
+
+def one_hot_to_word(one_hot):
+    '''
+    Returns the word corresponding to a given one-hot encoded vector
+    '''
+    return inv[np.argmax(one_hot)]
+
+
+if __name__ == '__main__':
+    frame.to_json("./text_sentences.json", orient="records")
