@@ -13,7 +13,7 @@ from time import time, strftime
 
 class Kate:
 
-    def __init__(self, embedding_size, vocab_size, max_seq_len, k, alpha, learning_rate=0.001, load_model=None):
+    def __init__(self, embedding_size, vocab_size, k, alpha, learning_rate=0.001, load_model=None):
         self._vocab_size = vocab_size
         self._k = k
         self._alpha = alpha
@@ -21,10 +21,10 @@ class Kate:
         print("Constructing KATE architecture...")
         self._graph = tf.Graph()
         with self._graph.as_default():
-            self._x = tf.placeholder(tf.int32, shape=[None, max_seq_len], name='X')
+            self._x = tf.placeholder(tf.int32, shape=[None], name='X')
             self._phase_train = tf.placeholder(tf.bool, name='Phase')
 
-            hot = tf.one_hot(self._x, depth=vocab_size, name='Hot')
+            hot = tf.one_hot(self._x, depth=vocab_size, name='Hot')  # `[batch, vocab_size]`
 
             with tf.variable_scope('Encoder'):
                 fc1, var_dict = fc(hot, embedding_size, activation=tf.nn.tanh, scope='FC1')
@@ -32,13 +32,9 @@ class Kate:
                 k1 = k_comp(fc1, self._phase_train, k, alpha=alpha, scope='K-Comp1')
 
             with tf.variable_scope('Decoder'):
-                k1_shape = k1.shape.as_list()
-                flattened = tf.reshape(k1, [-1, embedding_size])  # `[batch*max_seq_len, embedding_size]`
-
                 weights = tf.transpose(var_dict['Weights'])  # `[embedding_size, vocab_size]`
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
-                scores = tf.matmul(flattened, weights) + bias  # `[batch*max_seq_len, vocab_size]
-                scores = tf.reshape(scores, [-1] + k1_shape[1:-1] + [vocab_size])
+                scores = tf.matmul(k1, weights) + bias  # `[batch*max_seq_len, vocab_size]
 
                 self._y_hat = tf.nn.softmax(scores, name='Y-Hat')
                 self._pred = tf.argmax(self._y_hat, axis=-1, name='Predicted')
@@ -65,7 +61,7 @@ class Kate:
 
         Args:
             x_train:           A numpy ndarray that contains the data to train over. Should should have a shape of
-                               [batch_size, features...].
+                               `[batch_size]` where each element is the index of the word in the vocabulary.
             n_epochs:          The number of full passes over the provided dataset to perform until training is
                                considered to be complete.
             batch_size:        The size of the batch to use when training. Larger sizes mean a more stable loss function
@@ -106,10 +102,10 @@ class Kate:
 
         Args:
             x_data: A numpy ndarray of the data to apply the model to. Should have the same shape as the training data,
-                    e.g. `[batch_size, sentence_length]`.
+                    e.g. `[batch_size]`.
 
         Returns:
-            A numpy ndarray of the data, with shape `[batch_size, sentence_length, embedding_size]`
+            A numpy ndarray of the data, with shape `[batch_size, embedding_size]`
         """
         with self._sess.as_default():
             return self._sess.run(self._y_hat, feed_dict={self._x: x_data, self._phase_train: False})

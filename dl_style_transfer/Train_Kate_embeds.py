@@ -1,13 +1,13 @@
-import dl_style_transfer.make_gutenberg_corpus as mgc
+import dl_style_transfer.make_shakespeare_corpus as msc
 import dl_style_transfer.workspace.kate_new as k
 import numpy as np
 
 
-inds = mgc.sentence_mat()
-corpus = mgc.get_corpus()
-vocab = mgc.get_vocab()
-print(inds.shape)
-kate = k.Kate(128, len(vocab), inds.shape[1], 32, 6.26)
+inds = msc.sentence_mat()
+corpus = msc.get_corpus()
+vocab = msc.get_vocab()
+print(corpus)
+kate = k.Kate(128, len(vocab), 32, 6.26)
 kate.train()
 
 

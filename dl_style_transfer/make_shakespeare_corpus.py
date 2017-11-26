@@ -97,7 +97,7 @@ for b in books:
     print(frame.shape)
     frames.append(frame)
 
-file = open('yelp_sentences')
+file = open('yelp_sentences.txt')
 lines = list(file)
 yelp = pd.DataFrame({'title': 'Yelp Text', 'author': 'Yelp User', 'text': lines})
 frames.append(yelp)
