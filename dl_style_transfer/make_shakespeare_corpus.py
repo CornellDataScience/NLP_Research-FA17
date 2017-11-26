@@ -109,10 +109,6 @@ frame.reset_index(inplace=True)
 frame['len'] = frame['text'].str.len()
 print("Total: ", frame.shape)
 
-
-
-
-
 mod = tf.keras.preprocessing.text.Tokenizer()
 mod.fit_on_texts(frame['text'])
 inv = dict((v,k) for k, v in mod.word_index.items())
