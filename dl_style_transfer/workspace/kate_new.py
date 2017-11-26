@@ -33,11 +33,11 @@ class Kate:
 
             with tf.variable_scope('Decoder'):
                 k1_shape = k1.shape.as_list()
-                flattened = tf.reshape(k1, [-1, np.prod(k1_shape[1:])])
+                flattened = tf.reshape(k1, [-1, embedding_size])  # `[batch*max_seq_len, embedding_size]`
 
-                weights = var_dict['Weights']  # Use same weights from encoder
+                weights = tf.transpose(var_dict['Weights'])  # `[embedding_size, vocab_size]`
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
-                scores = tf.matmul(flattened, weights) + bias  # Effectively transpose multiply
+                scores = tf.matmul(flattened, weights) + bias  # `[batch*max_seq_len, vocab_size]
                 scores = tf.reshape(scores, [-1] + k1_shape[1:-1] + [vocab_size])
 
                 self._y_hat = tf.nn.softmax(scores, name='Y-Hat')
