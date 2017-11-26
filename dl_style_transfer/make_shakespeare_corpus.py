@@ -97,16 +97,26 @@ for b in books:
     print(frame.shape)
     frames.append(frame)
 
+file = open('yelp_sentences')
+lines = list(file)
+yelp = pd.DataFrame({'title': 'Yelp Text', 'author': 'Yelp User', 'text': lines})
+frames.append(yelp)
+
 frame = pd.concat(frames)
+
+
 frame.reset_index(inplace=True)
 frame['len'] = frame['text'].str.len()
 print("Total: ", frame.shape)
+
+
+
+
+
 mod = tf.keras.preprocessing.text.Tokenizer()
 mod.fit_on_texts(frame['text'])
 inv = dict((v,k) for k, v in mod.word_index.items())
 inv[-1] = ""
-
-
 
 def get_corpus():
     '''
@@ -171,6 +181,6 @@ def seq_list_to_word(lis):
 
 if __name__ == '__main__':
     frame.to_json("./shake_sentences.json", orient="records")
-    file = open("./shake_sentences.txt", 'w')
-    for l in frame['text']:
-        file.write(l + "\n")
+    # file = open("./shake_sentences.txt", 'w')
+    # for l in frame['text']:
+    #     file.write(l + "\n")
