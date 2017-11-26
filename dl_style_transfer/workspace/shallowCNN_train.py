@@ -4,8 +4,8 @@ import numpy as np
 import os
 import time
 import datetime
-from dl_style_transfer.workspace import data_helpers
-from dl_style_transfer.workspace.shallowCNN import TextCNN
+import data_helpers
+from shallowCNN import TextCNN
 from tensorflow.contrib import learn
 
 # Parameters
