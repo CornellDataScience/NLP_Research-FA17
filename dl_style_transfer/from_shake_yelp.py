@@ -32,6 +32,7 @@ for i, word in enumerate(col):
 
 voc_len = len(word_to_ind)
 
+
 def get_bag():
     bag = np.zeros((len(shake) + len(yelp), voc_len))
     for j,sent in enumerate(shake):
@@ -48,4 +49,16 @@ def string_to_vec(string):
     vec = np.zeros(voc_len)
     for wor in tokens:
         vec[word_to_ind[wor]] = vec[word_to_ind[wor]] + 1
+    return vec
 
+
+def get_ryans_strange_input():
+    vec = []
+    for l1, l2 in zip(yelp, shake):
+        vec.append(dl_style_transfer.workspace.data_helpers.clean_str(l1))
+        vec.append(dl_style_transfer.workspace.data_helpers.clean_str(l2))
+    return np.array([i for l in vec for i in l])
+
+
+def vocab_length():
+    return voc_len
