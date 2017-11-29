@@ -40,7 +40,7 @@ class Kate:
                 self._pred = tf.argmax(self._y_hat, axis=-1, name='Predicted')
 
             with tf.variable_scope('Loss'):
-                self._loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=scores, labels=self._x, name='Loss')
+                self._loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=scores, labels=self._x, name='Loss'))
                 self._train_step = tf.train.AdamOptimizer(learning_rate).minimize(self._loss)
 
             self._sess = tf.Session()
@@ -87,7 +87,7 @@ class Kate:
             for i in range(0, training_size, batch_size):
                 idx = perm[i:i + batch_size]
                 x_batch = x_train[idx]
-                _, loss_val = self._sess.run(self._train_step, feed_dict={self._x: x_batch})
+                _, loss_val = self._sess.run([self._train_step, self._loss], feed_dict={self._x: x_batch})
                 current_time = time()
                 if progress_interval is not None and (current_time - last_time) >= progress_interval:
                     last_time = current_time
