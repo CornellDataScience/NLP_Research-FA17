@@ -55,8 +55,9 @@ def string_to_vec(string):
 def get_ryans_strange_input():
     vec = []
     for l1, l2 in zip(yelp, shake):
-        vec.append(dl_style_transfer.workspace.data_helpers.clean_str(l1))
-        vec.append(dl_style_transfer.workspace.data_helpers.clean_str(l2))
+        f = lambda x: word_to_ind[x]
+        vec.append(map(f, dl_style_transfer.workspace.data_helpers.clean_str(l1)))
+        vec.append(map(f, dl_style_transfer.workspace.data_helpers.clean_str(l2)))
     return np.array([i for l in vec for i in l])
 
 
