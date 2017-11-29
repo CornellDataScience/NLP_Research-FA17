@@ -87,7 +87,7 @@ class Kate:
             for i in range(0, training_size, batch_size):
                 idx = perm[i:i + batch_size]
                 x_batch = x_train[idx]
-                _, loss_val = self._sess.run([self._train_step, self._loss], feed_dict={self._x: x_batch})
+                _, loss_val = self._sess.run([self._train_step, self._loss], feed_dict={self._x: x_batch, self._phase_train: False})
                 current_time = time()
                 if progress_interval is not None and (current_time - last_time) >= progress_interval:
                     last_time = current_time
