@@ -29,15 +29,15 @@ class Kate:
             with tf.variable_scope('Encoder'):
                 fc1, var_dict = fc(hot, embedding_size, activation=tf.nn.tanh, scope='FC1')
 
-                k1 = k_comp(fc1, self._phase_train, k, alpha=alpha, scope='K-Comp1')
+                self._encoded = k_comp(fc1, self._phase_train, k, alpha=alpha, scope='Encoded')
 
             with tf.variable_scope('Decoder'):
                 weights = tf.transpose(var_dict['Weights'])  # `[embedding_size, vocab_size]`
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
-                scores = tf.matmul(k1, weights) + bias  # `[batch*max_seq_len, vocab_size]
+                scores = tf.matmul(self._encoded, weights) + bias  # `[batch*max_seq_len, vocab_size]
 
-                self._y_hat = tf.nn.softmax(scores, name='Y-Hat')
-                self._pred = tf.argmax(self._y_hat, axis=-1, name='Predicted')
+                self._decoded = tf.nn.softmax(scores, name='Decoded')
+                self._argmax = tf.argmax(self._decoded, axis=-1, name='Decoded-Argmax')
 
             with tf.variable_scope('Loss'):
                 self._loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=scores, labels=self._x, name='Loss'))
@@ -97,18 +97,35 @@ class Kate:
             print("Completed Training.")
         return loss_val
 
-    def apply(self, x_data):
-        """Applies the model to the batch of data provided. Typically called after the model is trained.
+    def encode(self, raw_data):
+        """Encodes the batch of data provided. Typically called after the model is trained.
 
         Args:
-            x_data: A numpy ndarray of the data to apply the model to. Should have the same shape as the training data,
-                    e.g. `[batch_size]`.
+            raw_data: A numpy ndarray of the data to encode. Should have shape `[batch_size]`.
 
         Returns:
             A numpy ndarray of the data, with shape `[batch_size, embedding_size]`
         """
         with self._sess.as_default():
-            return self._sess.run(self._y_hat, feed_dict={self._x: x_data, self._phase_train: False})
+            return self._sess.run(self._encoded, feed_dict={self._x: raw_data, self._phase_train: False})
+
+    def decode(self, encodings, do_argmax=True):
+        """Decodes the batch of data provided. Typically called after the model is trained.
+
+        Args:
+            encodings:    A numpy ndarray of the data to decode. Should have shape `[batch_size, embedding_size]`.
+            do_argmax: Whether or not to argmax the vectors returned to predict the word.
+
+        Returns:
+            A numpy ndarray of the decoded data. If `do_argmax` is `False`, then the data will have shape
+            `[batch_size, vocab_size]` and will be populated by probabilities. If `do_argmax` is `True` the shape
+            is `[batch_size]` and the data will be populated by the indices of the decoded words in the vocabulary
+            that the model was trained on.
+        """
+        with self._sess.as_default():
+            return self._sess.run(
+                self._argmax if do_argmax else self._decoded,
+                feed_dict={self._encoded: encodings, self._phase_train: False})
 
     def save_model(self, save_path=None):
         """Saves the model in the specified file.
