@@ -89,7 +89,7 @@ class Kate:
         """
         training_size = x_train.shape[0]
 
-        key = [self._x if len(x_train.shape) is 1 else self._embedding]  # Choose which tensor to feed to based on shape
+        key = self._x if len(x_train.shape) is 1 else self._embedding  # Choose which tensor to feed to based on shape
 
         # Training loop for parameter tuning
         if start_stop_info:
@@ -123,7 +123,7 @@ class Kate:
             A numpy ndarray of the data, with shape `[batch_size, embedding_size]`
         """
         with self._sess.as_default():
-            key = [self._x if len(raw_data.shape) is 1 else self._embedding]  # Choose which tensor to feed to
+            key = self._x if len(raw_data.shape) is 1 else self._embedding  # Choose which tensor to feed to
             return self._sess.run(self._encoded, feed_dict={key: raw_data, self._phase_train: False})
 
     def decode(self, encodings, do_argmax=True):
@@ -155,7 +155,7 @@ class Kate:
             `[batch_size, embedding_size_in]`. If `do_argmax` is `True` the shape is `[batch_size]`.
         """
         with self._sess.as_default():
-            key = [self._x if len(raw_data.shape) is 1 else self._embedding]  # Choose which tensor to feed to
+            key = self._x if len(raw_data.shape) is 1 else self._embedding  # Choose which tensor to feed to
             return self._sess.run(
                 self._argmax if do_argmax else self._decoded,
                 feed_dict={key: raw_data, self._phase_train: False})

@@ -12,13 +12,11 @@ class TextCNN(object):
     Uses an embedding layer, followed by a convolutional, max-pooling and softmax layer.
     """
     def __init__(
-      self, sequence_length, num_classes, vocab_size,
+      self, num_reconstructions, sequence_length, num_classes, vocab_size,
       embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
-        self.trainable = trainable
 
         # Placeholders for input, output and dropout
-        self.input_x = tf.get_variable("input_x", initializer=xavier_initializer(shape=[None, sequence_length]))
-        self.input_y = tf.get_variable("input_y", initializer=xavier_initializer(shape=[None, sequence_length]))
+        self.input_x = tf.get_variable("input_x", initializer=xavier_initializer(shape=[num_reconstructions, sequence_length]))
         self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
         # Keeping track of l2 regularization loss (optional)
