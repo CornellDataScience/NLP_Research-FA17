@@ -14,8 +14,8 @@ np.random.seed(seed)
 dataset = yelp.get_ryans_strange_input()
 train, test = train_test_split(dataset)
 kate = Kate(128, yelp.vocab_length(), 32, 6.26)
-#kate.train(train, 100, 32)
-#kate.save_model("saved/kate_hot.ckpt")
+kate.train(train, 100, 128)
+kate.save_model("saved/kate_hot.ckpt")
 
 
 def random_sample(data, num_samples):
