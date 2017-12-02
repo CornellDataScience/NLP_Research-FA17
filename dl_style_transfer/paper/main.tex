@@ -4,7 +4,7 @@
 \usepackage[capposition=top]{floatrow}
 \usepackage{float}
 \usepackage[caption = false]{subfig}
-\usepackage{wrapfig}
+%\usepackage{hyperref}
 
 \begin{document}
 
@@ -22,18 +22,18 @@ Luca Leeser\\
        \affaddr{Cornell University}\\
        \email{ll698@cornell.edu}
 \alignauthor
+Yuji Akimoto\\
+       \affaddr{Cornell University}\\
+       \email{ya242@cornell.edu}
+\and
+\alignauthor 
 Ryan Butler\\
        \affaddr{Cornell University}\\
        \email{rjb392@cornell.edu}
-\and
 \alignauthor 
 Cameron Ibrahim\\
        \affaddr{Cornell University}\\
        \email{cai29@cornell.edu}
-\alignauthor 
-Yuji Akimoto\\
-       \affaddr{Cornell University}\\
-       \email{ya242@cornell.edu}
 }
 
 \date{1 December 2017}
@@ -66,12 +66,14 @@ In this paper, we explore the use of $k$-competitive convolutional layers, a gen
 
 % PRELIMINARY ANALYSIS
 \section{Preliminary Analysis}
-The majority of implementations of style transfer for images use the VGG-19 \cite{VGG19} architecture to generate content and style representations of an image. This network was originally trained to classify between 1000 images of the ImageNet challenge dataset \cite{ILSVRC15} and therefore is able to generate informative feature representations of a very large variety of objects. Given the resources required to train a similarly robust classifier for text, we first explore the tradeoffs of using an underlying network that is trained to discriminate between a much smaller number of classes by training a VGG network with the CIFAR-10 dataset \cite{Krizhevsky09} (here, we use pre-trained weights provided by \cite{Liu15}). Although this modified network is far less generalizable in terms of classification, we found that the content representations provided by later layers of the network were still informative enough to reconstruct the original image, even for images containing objects not included in the 10 classes of CIFAR-10. 
+The majority of implementations of style transfer for images use the VGG-19 \cite{VGG19} architecture to generate content and style representations of an image. This network was trained to classify between 1000 images of the ImageNet challenge dataset \cite{ILSVRC15} and therefore is able to generate informative feature representations of a very large variety of objects. Given the resources required to train a similarly robust classifier for text, we first explore the tradeoffs of using an underlying network that is trained to discriminate between a much smaller number of classes by training a VGG network with the CIFAR-10 dataset \cite{Krizhevsky09} (here, we use pre-trained weights provided by \cite{Liu15}). Although this modified network is far less generalizable in terms of classification, we found that the content representations provided by later layers of the network were still informative enough to reconstruct the original image, even for images containing objects not included in the 10 classes of CIFAR-10. 
 
 % MODEL
 \section{Model}
 \subsection{Convolutional Neural Networks for Text Classification}
-As the baseline for our comparisons we use a word-level convolutional neural network as designed by Yoon Kim in \cite{Kim14f}. 
+Although recurrent neural networks have proven adept at language recognition tasks, evaluating the overall content and style of written text is a task that is less dependent on sequential information, and a hidden state is likely too small to encode enough information for our purposes. We believe that a a convolutional neural network allows us to take advantage of the success of style transfer for images, in contrast to aforementioned approaches that treat style transfer as a machine translation problem.
+
+As the baseline for our comparisons we use a word-level convolutional neural network as designed by Yoon Kim in \cite{Kim14f}.
 
 \begin{figure}[h]
 \includegraphics[width=\linewidth]{cnn.png}
@@ -93,8 +95,8 @@ Here, we propose a generalization of $k$-competitive layers to convolutional lay
 
 % EXPERIMENTS
 \section{Experiments}
-\subsection{Datasets and Processing}
-Cite NLTK
+\subsection{Datasets}
+We use the most prolific reviewers on Yelp\footnote{{\texttt{https://www.yelp.com/dataset/challenge}}} to generate a large amounts of text for various styles of writing. Although the reviews for a frequent user of Yelp may span a number of years, we make the assumption that a user's writing style remains constant over that period of time. This may not strictly be the case as language, particularly of the colloquial variety that is often found online, evolves over time and certain words serve as clear indicators of certain time periods. However, dealing with a time-varying vocabulary set is an extension that we have not yet considered. After identifying the most frequent reviewers, we tokenize all of their reviews using NLTK \cite{Loper02nltk:the} to generate a corpus. 
 
 \subsection{Hyperparameters and Training}
 
@@ -121,9 +123,7 @@ The authors would like to thank Professor Thorsten Joachims at the department of
 %pagebreak
 
 \begin{appendix}
-This is an appendix
-
-\section{Graphs}
+%\href{https://github.com/CornellDataScience/Yelp-FA17/tree/master/dl_style_transfer}{Link} to Github repository for all code associated with this paper. 
 
 \end{appendix}
 \end{document}
