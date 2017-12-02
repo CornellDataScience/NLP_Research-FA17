@@ -30,7 +30,7 @@ class TextCNN(object):
         l2_loss = tf.constant(0.0)
 
         # Embedding layer
-        with tf.name_scope("embedding"):
+        with tf.variable_scope("embedding", reuse=True):
             self.W = tf.get_variable(
                 name="W", trainable=False)
             self.embedded_chars = tf.nn.embedding_lookup(self.W, self.input_x)
@@ -39,7 +39,7 @@ class TextCNN(object):
         # Create a convolution + maxpool layer for each filter size
         pooled_outputs = []
         for i, filter_size in enumerate(self.filter_sizes):
-            with tf.name_scope("conv-maxpool-%s" % filter_size):
+            with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=True):
                 # Convolution Layer
                 filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
                 W = tf.get_variable(name="W", trainable=False)
@@ -67,11 +67,11 @@ class TextCNN(object):
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
         # Add dropout
-        with tf.name_scope("dropout"):
+        with tf.variable_scope("dropout"):
             self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
 
         # Final (unnormalized) scores and predictions
-        with tf.name_scope("output"):
+        with tf.variable_scope("output", reuse=True):
             W = tf.get_variable(
                 "W", trainable=False)
             b = tf.get_variable(name="b", trainable=False)
