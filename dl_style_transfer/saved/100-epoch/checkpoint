@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/serverteam_1/Yelp-FA17/dl_style_transfer/saved/100-epoch/kate-bag-words-100.ckpt"
+all_model_checkpoint_paths: "/home/serverteam_1/Yelp-FA17/dl_style_transfer/saved/100-epoch/kate-bag-words-100.ckpt"
