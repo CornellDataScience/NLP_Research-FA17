@@ -14,7 +14,7 @@ np.random.seed(seed)
 
 dataset = yelp.get_ryans_strange_input()
 train, test = train_test_split(dataset)
-kate = Kate(128, yelp.vocab_length(), 32, 6.26, load_model='saved/100-epoch/kate-hot-100.ckpt')
+kate = Kate(yelp.vocab_length(), 128, 32, 6.26, load_model='saved/100-epoch/kate-hot-100.ckpt')
 # kate.train(train, 100, 128)
 # kate.save_model("saved/100-epoch/kate-hot-100.ckpt")
 
@@ -41,7 +41,7 @@ def compute_accuracy(data, batch_size, start_stop_info=True, progress_interval=5
         current_time = time()
         if progress_interval is not None and (current_time - last_time) >= progress_interval:
             last_time = current_time
-            print("Computing accuracy. Percent complete:", 100*count/n_batches, i)
+            print("Computing accuracy. Percent complete:", 100*count/n_batches)
         count += 1
 
     if start_stop_info:

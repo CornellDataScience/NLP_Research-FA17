@@ -13,8 +13,20 @@ from time import time, strftime
 
 class Kate:
 
-    def __init__(self, embedding_size, vocab_size, k, alpha, learning_rate=0.001, load_model=None):
-        self._vocab_size = vocab_size
+    def __init__(self, embedding_size_in, embedding_size_out, k, alpha, learning_rate=0.001, load_model=None):
+        """Initializes the KATE model. Does not perform any training.
+
+        Args:
+            embedding_size_in:  The size of the input embeddings. For word embeddings, this is the vocabulary size.
+            embedding_size_out: The size of the output embeddings. This is the size of the encoded vectors.
+            k:                  The number of neurons to keep in the k-competitive layer.
+            alpha:              Sets the intensity of the energy redistribution in the k-comptitive layer.
+            learning_rate:      The learning rate for training.
+            load_model:         A string giving the path to the model to load. If `None`, the model's weights are
+                                randomly initialized to start training from scratch.
+        """
+        self._embedding_size_in = embedding_size_in
+        self._embedding_size_out = embedding_size_out
         self._k = k
         self._alpha = alpha
 
@@ -24,17 +36,17 @@ class Kate:
             self._x = tf.placeholder(tf.int32, shape=[None], name='X')
             self._phase_train = tf.placeholder(tf.bool, name='Phase')
 
-            hot = tf.one_hot(self._x, depth=vocab_size, name='Hot')  # `[batch, vocab_size]`
+            self._embedding = tf.one_hot(self._x, depth=embedding_size_in, name='Embedding')  # `[batch, embedding_size_in]`
 
             with tf.variable_scope('Encoder'):
-                fc1, var_dict = fc(hot, embedding_size, activation=tf.nn.tanh, scope='FC1')
+                fc1, var_dict = fc(self._embedding, embedding_size_out, activation=tf.nn.tanh, scope='FC1')
 
                 self._encoded = k_comp(fc1, self._phase_train, k, alpha=alpha, scope='Encoded')
 
             with tf.variable_scope('Decoder'):
-                weights = tf.transpose(var_dict['Weights'])  # `[embedding_size, vocab_size]`
-                bias = tf.get_variable('Scores', initializer=xavier_initializer((vocab_size,)))
-                scores = tf.matmul(self._encoded, weights) + bias  # `[batch*max_seq_len, vocab_size]
+                weights = tf.transpose(var_dict['Weights'])  # `[embedding_size_out, embedding_size_in]`
+                bias = tf.get_variable('Scores', initializer=xavier_initializer((embedding_size_in,)))
+                scores = tf.matmul(self._encoded, weights) + bias  # `[batch*max_seq_len, embedding_size_in]
 
                 self._decoded = tf.nn.softmax(scores, name='Decoded')
                 self._argmax = tf.argmax(self._decoded, axis=-1, name='Decoded-Argmax')
@@ -60,8 +72,10 @@ class Kate:
         """Trains the model on the batch of data provided. Typically called before inference.
 
         Args:
-            x_train:           A numpy ndarray that contains the data to train over. Should should have a shape of
-                               `[batch_size]` where each element is the index of the word in the vocabulary.
+            x_train:           A numpy ndarray that contains the data to train over. If shaped  `[batch_size]`, the data
+                               is interpreted as a list of indices, and is internally expanded into one-hot vectors of
+                               length `embedding_size_in`. If shaped `[batch_size, embedding_size_in]`, then the data is
+                               interpreted as a batch of embedding vectors of length `embedding_size_in`.
             n_epochs:          The number of full passes over the provided dataset to perform until training is
                                considered to be complete.
             batch_size:        The size of the batch to use when training. Larger sizes mean a more stable loss function
@@ -75,6 +89,8 @@ class Kate:
         """
         training_size = x_train.shape[0]
 
+        key = [self._x if len(x_train.shape) is 1 else self._embedding]  # Choose which tensor to feed to based on shape
+
         # Training loop for parameter tuning
         if start_stop_info:
             print("Starting training for %d epochs" % n_epochs)
@@ -87,7 +103,7 @@ class Kate:
             for i in range(0, training_size, batch_size):
                 idx = perm[i:i + batch_size]
                 x_batch = x_train[idx]
-                _, loss_val = self._sess.run([self._train_step, self._loss], feed_dict={self._x: x_batch, self._phase_train: False})
+                _, loss_val = self._sess.run([self._train_step, self._loss], feed_dict={key: x_batch, self._phase_train: False})
                 current_time = time()
                 if progress_interval is not None and (current_time - last_time) >= progress_interval:
                     last_time = current_time
@@ -101,7 +117,7 @@ class Kate:
         """Encodes the batch of data provided. Typically called after the model is trained.
 
         Args:
-            raw_data: A numpy ndarray of the data to encode. Should have shape `[batch_size]`.
+            raw_data: A numpy ndarray of the data to encode. Should match the data format of `train()`.
 
         Returns:
             A numpy ndarray of the data, with shape `[batch_size, embedding_size]`
@@ -118,9 +134,7 @@ class Kate:
 
         Returns:
             A numpy ndarray of the decoded data. If `do_argmax` is `False`, then the data will have shape
-            `[batch_size, vocab_size]` and will be populated by probabilities. If `do_argmax` is `True` the shape
-            is `[batch_size]` and the data will be populated by the indices of the decoded words in the vocabulary
-            that the model was trained on.
+            `[batch_size, embedding_size_in]`. If `do_argmax` is `True` the shape is `[batch_size]`.
         """
         with self._sess.as_default():
             return self._sess.run(
@@ -132,14 +146,12 @@ class Kate:
         is trained.
 
         Args:
-            raw_data:  A numpy ndarray of the data to reconstruct. Should have shape `[batch_size]`.
+            raw_data:  A numpy ndarray of the data to reconstruct. Should match the data format of `train()`.
             do_argmax: Whether or not to argmax the vectors returned to reconstruct the word.
 
         Returns:
             A numpy ndarray of the reconstructed data. If `do_argmax` is `False`, then the data will have shape
-            `[batch_size, vocab_size]` and will be populated by probabilities. If `do_argmax` is `True` the shape
-            is `[batch_size]` and the data will be populated by the indices of the reconstructed words in the vocabulary
-            that the model was trained on.
+            `[batch_size, embedding_size_in]`. If `do_argmax` is `True` the shape is `[batch_size]`.
         """
         with self._sess.as_default():
             return self._sess.run(
