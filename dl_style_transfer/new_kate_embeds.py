@@ -24,11 +24,11 @@ def train_batch(data, batch_size, epoch=100, start_stop_info=True, progress_inte
     for _ in range(epoch):
         for i in range(0, len(data), batch_size):
             batch = data[i:i + batch_size]
-            npbatch = np.zeros(len(batch), yelp.vocab_len())
+            npbatch = np.zeros((len(batch), yelp.vocab_length()))
             for i in range(len(batch)):
                 for j in range(len(batch[i])):
                     npbatch[i, j] += npbatch[i, j] + 1
-            npbatch = np.log(1 + npbatch) / np.max(np.log(1 + npbatch), axis=1)
+            npbatch = np.log(1 + npbatch) / np.expand_dims(np.max(np.log(1 + npbatch), axis=1), -1)
             kate.train(npbatch, 1, 128)
 
 
@@ -53,11 +53,11 @@ def compute_accuracy(data, batch_size, start_stop_info=True, progress_interval=5
     count = 0
     for i in range(0, len(data), batch_size):
         batch = data[i:i + batch_size]
-        npbatch = np.zeros(len(batch), yelp.vocab_len())
+        npbatch = np.zeros((len(batch), yelp.vocab_length()), dtype=np.float32)
         for i in range(len(batch)):
             for j in range(len(batch[i])):
                 npbatch[i, j] += npbatch[i, j] + 1
-        npbatch = np.log(1 + npbatch) / np.max(np.log(1 + npbatch), axis=1)
+        npbatch = np.log(1 + npbatch) / np.expand_dims(np.max(np.log(1 + npbatch), axis=1), -1)
         reconstructed = kate.reconstruct(npbatch)
         accuracy += np.sum(reconstructed == npbatch)
         current_time = time()
