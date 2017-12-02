@@ -5,7 +5,7 @@ import os
 import time
 import datetime
 import data_helpers
-from shallowCNN_transfer import TextCNN
+from shallowCNN import TextCNN
 from tensorflow.contrib import learn
 
 # Parameters
@@ -78,7 +78,6 @@ with tf.Graph().as_default():
     sess = tf.Session(config=session_conf)
     with sess.as_default():
         cnn = TextCNN(
-            False,
             sequence_length=x_train.shape[1],
             num_classes=y_train.shape[1],
             vocab_size=len(vocab_processor.vocabulary_),
@@ -104,9 +103,6 @@ with tf.Graph().as_default():
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
         saver = tf.train.Saver(tf.global_variables(), max_to_keep=FLAGS.num_checkpoints)
-
-        # Write vocabulary
-        vocab_processor.save(os.path.join(out_dir, "vocab"))
 
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
