@@ -15,7 +15,7 @@ np.random.seed(seed)
 
 data = yelp.get_small_bag()
 train, test = train_test_split(data)
-kate = Kate(yelp.vocab_length(), 128, 32, 6.26)
+kate = Kate(yelp.vocab_length(), 128, False, 32, 6.26)
 # kate.train(train, 100, 128)
 
 
