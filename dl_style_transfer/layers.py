@@ -7,7 +7,7 @@ import numpy as np
 import math
 
 
-def batch_norm(x, phase_train, decay=0.9, custom_inits=None, scope=None):
+def batch_norm(x, phase_train, decay=0.9, custom_inits=None, scope='BN'):
     """Creates a batch normalization layer.
     Used to stabilize distribution of outputs from a layer. Typically used right before a non-linearity. Works on
     n-dimensional data.
@@ -25,12 +25,12 @@ def batch_norm(x, phase_train, decay=0.9, custom_inits=None, scope=None):
         normed, vars: `normed` is a tensor of the batch-normalized features, and has same shape as `input`.
                       `vars` is a dict of the variables.
     """
-    x = tf.convert_to_tensor(x)
-    x_shape = x.shape.as_list()  # Don't deal with a TensorShape and instead use a list
+    # x = tf.convert_to_tensor(x)
+    # x_shape = x.shape.as_list()  # Don't deal with a TensorShape and instead use a list
 
     # Check to ensure the minimum shape is met and there are no unknown dims in important places
-    if None in x_shape[1:] or len(x_shape) < 2:
-        raise ValueError("`x.shape` must be [batch, ..., features].")
+    #if None in x_shape[1:] or len(x_shape) < 2:
+    #    raise ValueError("`x.shape` must be [batch, ..., features].")
 
     with tf.variable_scope(scope, default_name='BN'):
         # Define default initializers for beta and gamma. These are functions from shape to tensor.
@@ -41,8 +41,8 @@ def batch_norm(x, phase_train, decay=0.9, custom_inits=None, scope=None):
         if custom_inits is not None:
             inits.update(custom_inits)  # Overwrite default inits with `custom_inits`
 
-        beta = tf.get_variable('Beta', initializer=inits['Beta']([x_shape[-1]]))  # Learned mean
-        gamma = tf.get_variable('Gamma', initializer=inits['Gamma']([x_shape[-1]]))  # Learned std. dev.
+        beta = tf.get_variable('Beta', initializer=tf.constant(custom_inits['Beta'], shape=x.shape[-1]))  # Learned mean
+        gamma = tf.get_variable('Gamma', initializer=tf.constant(custom_inits['Gamma'], shape=x.shape[-1]))  # Learned stdev.
 
         # Get mean and variance over batch and spatial dims
         batch_mean, batch_var = tf.nn.moments(x, list(range(len(x_shape) - 1)), name='Moments')
@@ -64,7 +64,6 @@ def batch_norm(x, phase_train, decay=0.9, custom_inits=None, scope=None):
             lambda: (ema.average(batch_mean), ema.average(batch_var)))  # If inference, use averaged mean
         normed = tf.nn.batch_normalization(x, mean, var, beta, gamma, 1e-3, name='Normalized')
     return normed, {'Beta': beta, 'Gamma': gamma}
-
 
 bn = batch_norm
 
