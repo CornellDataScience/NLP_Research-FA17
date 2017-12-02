@@ -25,7 +25,10 @@ def random_sample(data, num_samples):
     return data[idxs]
 
 
-def compute_accuracy(data, batch_size, progress_interval=5):
+def compute_accuracy(data, batch_size, start_stop_info=True, progress_interval=5):
+    if start_stop_info:
+        print("Computing accuracy for dataset of size", data.shape[0])
+
     n_batches = np.ceil(data.shape[0]/batch_size)
 
     accuracy = 0
@@ -34,18 +37,22 @@ def compute_accuracy(data, batch_size, progress_interval=5):
     for i in range(0, data.shape[0], batch_size):
         batch = data[i:i+batch_size]
         reconstructed = kate.reconstruct(batch)
-        accuracy += np.sum(reconstructed==batch)
+        accuracy += np.sum(reconstructed == batch)
         current_time = time()
         if progress_interval is not None and (current_time - last_time) >= progress_interval:
             last_time = current_time
-            print("Computing accuracy. Percent complete:", 100*count/data.shape[0])
+            print("Computing accuracy. Percent complete:", 100*count/n_batches, i)
         count += 1
+
+    if start_stop_info:
+        print("Finished computing accuracy!")
+
     accuracy /= data.shape[0]
     return accuracy
 
 
 batch_size = 128
-num_samples = 100000
+num_samples = 50000
 train_accuracy = compute_accuracy(random_sample(train, num_samples), batch_size)
 test_accuracy = compute_accuracy(random_sample(test, num_samples), batch_size)
 print("Training Accuracy:", train_accuracy)
