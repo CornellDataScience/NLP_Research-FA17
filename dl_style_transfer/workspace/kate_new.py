@@ -123,7 +123,8 @@ class Kate:
             A numpy ndarray of the data, with shape `[batch_size, embedding_size]`
         """
         with self._sess.as_default():
-            return self._sess.run(self._encoded, feed_dict={self._x: raw_data, self._phase_train: False})
+            key = [self._x if len(raw_data.shape) is 1 else self._embedding]  # Choose which tensor to feed to
+            return self._sess.run(self._encoded, feed_dict={key: raw_data, self._phase_train: False})
 
     def decode(self, encodings, do_argmax=True):
         """Decodes the batch of data provided. Typically called after the model is trained.
@@ -154,9 +155,10 @@ class Kate:
             `[batch_size, embedding_size_in]`. If `do_argmax` is `True` the shape is `[batch_size]`.
         """
         with self._sess.as_default():
+            key = [self._x if len(raw_data.shape) is 1 else self._embedding]  # Choose which tensor to feed to
             return self._sess.run(
                 self._argmax if do_argmax else self._decoded,
-                feed_dict={self._x: raw_data, self._phase_train: False})
+                feed_dict={key: raw_data, self._phase_train: False})
 
     def save_model(self, save_path=None):
         """Saves the model in the specified file.
