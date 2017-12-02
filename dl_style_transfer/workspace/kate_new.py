@@ -113,7 +113,7 @@ class Kate:
         """Decodes the batch of data provided. Typically called after the model is trained.
 
         Args:
-            encodings:    A numpy ndarray of the data to decode. Should have shape `[batch_size, embedding_size]`.
+            encodings: A numpy ndarray of the data to decode. Should have shape `[batch_size, embedding_size]`.
             do_argmax: Whether or not to argmax the vectors returned to predict the word.
 
         Returns:
@@ -126,6 +126,25 @@ class Kate:
             return self._sess.run(
                 self._argmax if do_argmax else self._decoded,
                 feed_dict={self._encoded: encodings, self._phase_train: False})
+
+    def reconstruct(self, raw_data, do_argmax=True):
+        """Reconstructs the batch of data provided by encoding and then decoding it. Typically called after the model
+        is trained.
+
+        Args:
+            raw_data:  A numpy ndarray of the data to reconstruct. Should have shape `[batch_size]`.
+            do_argmax: Whether or not to argmax the vectors returned to reconstruct the word.
+
+        Returns:
+            A numpy ndarray of the reconstructed data. If `do_argmax` is `False`, then the data will have shape
+            `[batch_size, vocab_size]` and will be populated by probabilities. If `do_argmax` is `True` the shape
+            is `[batch_size]` and the data will be populated by the indices of the reconstructed words in the vocabulary
+            that the model was trained on.
+        """
+        with self._sess.as_default():
+            return self._sess.run(
+                self._argmax if do_argmax else self._decoded,
+                feed_dict={self._x: raw_data, self._phase_train: False})
 
     def save_model(self, save_path=None):
         """Saves the model in the specified file.
