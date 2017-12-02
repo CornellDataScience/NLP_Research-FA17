@@ -5,7 +5,7 @@ import os
 import time
 import datetime
 import data_helpers
-from shallowCNN_transfer import TextCNN
+from shallowCNN import TextCNN
 from tensorflow.contrib import learn
 
 # Parameters
