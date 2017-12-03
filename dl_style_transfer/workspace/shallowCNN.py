@@ -47,9 +47,7 @@ class TextCNN(object):
                     padding="VALID",
                     name="conv")
                 # Apply nonlinearity
-                print("conv shape:", conv.shape, filter_size)
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
-
                 # Maxpooling over the outputs
                 pooled = tf.nn.max_pool(
                     h,
@@ -57,15 +55,12 @@ class TextCNN(object):
                     strides=[1, 1, 1, 1],
                     padding='VALID',
                     name="pool")
-                print("pooled shape:", pooled.shape, filter_size)
                 pooled_outputs.append(pooled)
 
         # Combine all the pooled features
         num_filters_total = num_filters * len(filter_sizes)
         self.h_pool = tf.concat(pooled_outputs, axis=3)
-        print(self.h_pool.shape)
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
-        print(self.h_pool_flat.shape)
 
         # Add dropout
         with tf.variable_scope("dropout"):
