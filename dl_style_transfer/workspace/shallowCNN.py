@@ -34,7 +34,7 @@ class TextCNN(object):
 
         # Create a convolution + maxpool layer for each filter size
         pooled_outputs = []
-        activations = []
+        #activations = []
         for i, filter_size in enumerate(filter_sizes):
             with tf.variable_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
@@ -45,25 +45,29 @@ class TextCNN(object):
                     self.embedded_chars_expanded,
                     W,
                     strides=[1, 1, 1, 1],
-                    padding="SAME",
+                    padding="VALID",
                     name="conv")
                 # Apply nonlinearity
+                print("conv shape:", conv.shape, filter_size)
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
-                activations.append(h)
+                #activations.append(h)
                 # Maxpooling over the outputs
                 pooled = tf.nn.max_pool(
                     h,
                     ksize=[1, sequence_length - filter_size + 1, 1, 1],
                     strides=[1, 1, 1, 1],
-                    padding='SAME',
+                    padding='VALID',
                     name="pool")
+                print("pooled shape:", pooled.shape, filter_size)
                 pooled_outputs.append(pooled)
 
         # Combine all the pooled features
         num_filters_total = num_filters * len(filter_sizes)
         self.h_pool = tf.concat(pooled_outputs, axis=3)
+        print(self.h_pool.shape)
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
-        self.activations_concat = tf.concat(activations, axis=3)
+        print(self.h_pool_flat.shape)
+        #self.activations_concat = tf.concat(activations, axis=3)
 
         # Add dropout
         with tf.variable_scope("dropout"):
@@ -79,7 +83,7 @@ class TextCNN(object):
             l2_loss += tf.nn.l2_loss(W)
             l2_loss += tf.nn.l2_loss(b)
             self.scores = tf.nn.xw_plus_b(self.h_drop, W, b, name="scores")
-            self.predictions = tf.argmax(self.scores, 1, name="predictions")
+            self.predictions = tf.argmax(self.scores, -1, name="predictions")
 
         # Calculate mean cross-entropy loss
         with tf.variable_scope("loss"):
@@ -88,5 +92,5 @@ class TextCNN(object):
 
         # Accuracy
         with tf.variable_scope("accuracy"):
-            correct_predictions = tf.equal(self.predictions, tf.argmax(self.input_y, 1))
+            correct_predictions = tf.equal(self.predictions, tf.argmax(self.input_y, -1))
             self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
