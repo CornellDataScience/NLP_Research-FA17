@@ -1,8 +1,7 @@
 import numpy as np
+import atexit
 import os
 import sys
-import atexit
-
 sys.path.append(os.path.abspath('../'))
 
 import dl_style_transfer.from_shake_yelp as yelp
