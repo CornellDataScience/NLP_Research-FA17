@@ -40,7 +40,7 @@ class TextCNN(object):
         pooled_outputs = []
         self.activations = []
         for i, filter_size in enumerate(self.filter_sizes):
-            with tf.variable_scope("conv-maxpool-%s" % filter_size):
+            with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=True):
                 # Convolution Layer
                 filter_shape = [filter_size, embedding_size, 1, num_filters]
                 W = tf.get_variable(name="W", shape=filter_shape, trainable=False)
@@ -73,7 +73,7 @@ class TextCNN(object):
             self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
 
         # Final (unnormalized) scores and predictions
-        with tf.variable_scope("output"):
+        with tf.variable_scope("output", reuse=True):
             W = tf.get_variable(
                 "W", shape=[num_filters_total, num_classes], trainable=False)
             b = tf.get_variable(name="b", shape=[num_classes], trainable=False)
