@@ -13,14 +13,14 @@ from time import time, strftime
 
 class Kate:
 
-    def __init__(self, embedding_size_in, embedding_size_out, expand_hot, k, alpha, learning_rate=0.001, load_model=None):
+    def __init__(self, embedding_size_in, embedding_size_out, is_hot, k, alpha, learning_rate=0.001, load_model=None):
         """Initializes the KATE model. Does not perform any training.
 ,
         Args:
             embedding_size_in:  The size of the input embeddings. If `expand_hot` is `True`, this is the size of the one
                                 hot vectors that will be generated.
             embedding_size_out: The size of the output embeddings. This is the size of the encoded vectors.
-            expand_hot:         Boolean determining if the input represents indices of a word list to be expanded using
+            is_hot:             Boolean determining if the input represents bag of words or one hot representation
                                 a one-hot representation.
             k:                  The number of neurons to keep in the k-competitive layer.
             alpha:              Sets the intensity of the energy redistribution in the k-comptitive layer.
@@ -30,7 +30,7 @@ class Kate:
         """
         self._embedding_size_in = embedding_size_in
         self._embedding_size_out = embedding_size_out
-        self._expand_hot = expand_hot
+        self._is_hot = is_hot
         self._k = k
         self._alpha = alpha
 
@@ -39,7 +39,7 @@ class Kate:
         with self._graph.as_default():
             self._phase_train = tf.placeholder(tf.bool, name='Phase')
 
-            if expand_hot:
+            if is_hot:
                 self._x = tf.placeholder(tf.int32, shape=[None], name='X')
                 self._embedding = tf.one_hot(self._x, depth=embedding_size_in, name='Embedding')
             else:
@@ -59,7 +59,10 @@ class Kate:
                 self._argmax = tf.argmax(self._decoded, axis=-1, name='Decoded-Argmax')
 
             with tf.variable_scope('Loss'):
-                self._loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=scores, labels=self._embedding, name='Loss'))
+                if is_hot:
+                    self._loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=scores, labels=self._embedding, name='Loss'))
+                else:
+                    self._loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=scores, labels=self._embedding, name='Loss'))
                 self._train_step = tf.train.AdamOptimizer(learning_rate).minimize(self._loss)
 
             self._sess = tf.Session()
@@ -96,7 +99,7 @@ class Kate:
         """
         training_size = x_train.shape[0]
 
-        if self._expand_hot:
+        if self._is_hot:
             key = self._x
         else:
             key = self._embedding
