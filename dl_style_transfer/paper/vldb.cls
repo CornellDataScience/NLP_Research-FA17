@@ -155,13 +155,13 @@
                                         % to top or bottom of text page.
 \textfloatsep 18pt plus 2pt minus 4pt   % Space between main text and floats
                                         % at top or bottom of page.
-\intextsep 11pt plus 2pt minus 2pt      % Space between in-text figures and
+\intextsep 6pt plus 2pt minus 2pt      % Space between in-text figures and
                                         % text.
 \@ifundefined{@maxsep}{\newdimen\@maxsep}{}% this is for LaTeX2e
 \@maxsep 18pt                           % The maximum of \floatsep,
                                         % \textfloatsep and \intextsep (minus
                                         % the stretch and shrink).
-\dblfloatsep 11pt plus 2pt minus 2pt    % Same as \floatsep for double-column
+\dblfloatsep 6pt plus 2pt minus 2pt    % Same as \floatsep for double-column
                                         % figures in two-column mode.
 \dbltextfloatsep 18pt plus 2pt minus 4pt% \textfloatsep for double-column
                                         % floats.

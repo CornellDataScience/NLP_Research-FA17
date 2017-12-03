@@ -71,7 +71,45 @@ Recent methods based on neural networks fall into two broad categories: those th
 
 % PRELIMINARY ANALYSIS
 \section{Preliminary Analysis}
-The majority of implementations of style transfer for images use the VGG-19 \cite{VGG19} architecture to generate content and style representations of an image. This network was trained to classify images into one of the one thousand classes of the ImageNet challenge dataset \cite{ILSVRC15} and therefore is able to generate informative feature representations of a very large variety of objects. Given the resources required to train a similarly robust classifier for text, we first explore the tradeoffs of using an underlying network that is trained to discriminate between a much smaller number of classes by training a VGG network with the CIFAR-10 dataset \cite{Krizhevsky09} (here, we use pre-trained weights provided by \cite{Liu15}). Although this modified network is far less generalizable in terms of classification, we found that the content representations provided by later layers of the network were still informative enough to reconstruct the original image, even for images containing objects not included in the 10 classes of CIFAR-10. 
+The majority of implementations of style transfer for images use the VGG-19 \cite{VGG19} architecture to generate content and style representations of an image. This network was trained to classify images into one of the one thousand classes of the ImageNet challenge dataset \cite{ILSVRC15} and therefore is able to generate informative feature representations of a very large variety of objects. Given the resources required to train a similarly robust classifier for text, we first explore the tradeoffs of using an underlying network that is trained to discriminate between a much smaller number of classes by training a VGG network with the CIFAR-10 dataset \cite{Krizhevsky09} (here, we use pre-trained weights provided by \cite{Liu15}). Although this modified network is far less generalizable in terms of classification, we found that the content representations provided by later layers of the network were still informative enough to reconstruct the original image, even for images containing objects not included in the 10 classes of CIFAR-10. By reconstruction, we refer to treating the input to the network as a variable, and minimizing $\ell_2$ loss between the input image and original image's feature representations in a certain layer.
+
+\begin{figure}[h]
+\subfloat{\includegraphics[width = .15\linewidth]{cornell-campus-small.jpg}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{anderson-small.jpg}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{boats.jpg}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{whale.jpg}}
+\hspace{0.1cm} 
+\subfloat{\includegraphics[width = .15\linewidth]{pizza.jpg}}
+\hspace{0.1cm} \\
+\subfloat{\includegraphics[width = .15\linewidth]{2600.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{anderson5800.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{boats2100.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{boats3200.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{pizza5000.png}}
+\hspace{0.1cm} \\
+\subfloat{\includegraphics[width = .15\linewidth]{corne9900.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{ander9900.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{boats9900.png}}
+\hspace	{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{whale9900.png}}
+\hspace{0.1cm}
+\subfloat{\includegraphics[width = .15\linewidth]{pizza9900.png}}
+\hspace{0.1cm}
+\caption{\textmd{Several 32x32 images (top) reconstructed in the conv2\_2 layer (middle) and conv4\_2 layer (bottom) of VGG-19 trained on CIFAR-10 data; maximum 10000 iterations.}}
+\end{figure} 
+
+In the reconstruction phase, we use average-pooling in place of max-pooling, as suggested in \cite{GatysEB15a}. Although none of the images in Figure 2 resemble any of the ten classes present in CIFAR-10 data, the network still produces highly informative feature representations through convolution. This is a key observation in making the transition to text data, as writing style is subjective and therefore it is difficult to collect data from a large number of distinct classes that span the entire space of writing styles. 
+
+However, we also observe that this reduction in generalizability of the underlying network architecture is not without tradeoffs. When using the conv4\_2 layer at which to match the feature representations of two images (the layer used in Figure 1), the reconstructed images are mostly unrecognizable to the human eye, and takes a much larger number of iterations to produce something even remotely close to the original. While we do not dismiss the possibility that this loss in reconstruction accuracy could be mitigated by hyperparameter optimization, we conclude that high generalizability as a classifier is an important quality of the underlying architecture although not paramount.
 
 % MODEL
 \section{Model}
@@ -96,16 +134,21 @@ Since textual data often has high-dimensionality, sparsity, and power-law distri
 \caption{\textmd{A fully connected $k$-competitive layer.}}
 \end{figure}
 
-Here, we propose a generalization of $k$-competitive layers to convolutional layers.
+Here, we propose a generalization of $k$-competitive layers to convolutional layers. Let $z_{ijk}$ be the activation volume produced by a convolutional layer, where $z_{x,y,:}$ denotes the feature vector at spatial location $(x,y)$. Then, we define the \textbf{energy map} of an activation volume, $E$, as the matrix with entries:
+$$e_{ij} = \sum_{k=1}^K |z_{ijk}|$$
+We then perform a $k$-competitive non-linearity, where we select the $k$ most competitive entries, and masking the activations of the ``loser'' neurons while augmenting the activations of the ``winner'' neurons. If we denote the set of indices of the $k$ ``winner'' neurons by $C_k$, then:
+$$kcomp(z)_{i,j,:} = \textbf{0} \hspace{0.5cm} \forall (i,j) \notin C_k$$
+$$kcomp(z)_{i,j,:} = z_{i,j,:} + \alpha\sum_{(i,j) \notin C_k} z_{i,j,:} \hspace{0.5cm} \forall (i,j) \in C_k$$
+where $\alpha$, the amplification constant, is a hyperparameter.
 
 % EXPERIMENTS
 \section{Experiments}
 \subsection{Datasets}
 We use the most prolific reviewers on Yelp\footnote{{\texttt{https://www.yelp.com/dataset/challenge}}} to generate a large amounts of text for various styles of writing. Although the reviews for a frequent user of Yelp may span a number of years, we make the assumption that a user's writing style remains constant over that period of time. This may not strictly be the case as language, particularly of the colloquial variety that is often found online, evolves over time and certain words serve as clear indicators of certain time periods. However, dealing with a time-varying vocabulary set is an extension that we have not yet considered. After identifying the most frequent reviewers, we tokenize all of their reviews using NLTK \cite{Loper02nltk:the} to generate a corpus. 
 
-\subsection{Hyperparameters and Training}
-
 \subsection{Comparison of Architectures}
+
+\subsection{Hyperparameters and Training}
 
 % RESULTS
 \section{Results}
