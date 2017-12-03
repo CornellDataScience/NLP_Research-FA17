@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/luca/Projects/Yelp-FA17/saved/100-epoch/kate-hot-100.ckpt"
+all_model_checkpoint_paths: "/home/luca/Projects/Yelp-FA17/saved/100-epoch/kate-hot-100.ckpt"
