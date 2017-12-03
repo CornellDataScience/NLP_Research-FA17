@@ -107,14 +107,18 @@ with tf.Graph().as_default():
         data_batch = x_train[:1]
         embeddings_batch = np.zeros(data_batch.shape + [FLAGS.embedding_dim])
         for i, sentence in enumerate(x_train):
-            embeddings_batch[i] = np.array(OneHotEncoder(n_values=len(vocab_processorx.vocabulary_)).fit_transform(sentence).todense())
-        # Assign reconstruction matrix to data_batch
-        target_content = sess.run(cnn.activations)
+            embeddings_batch[i] = np.array(OneHotEncoder(n_values=len(vocab_processor.vocabulary_)).fit_transform(sentence).todense())
+        
+        # Assign reconstruction tensor to data_batch to generatae target_content
+        target_content = sess.run(cnn.activations, feed_dict={cnn.reconstructions: embeddings_batch})
+        target_content = [tf.constant(target) for target in target_content]
+        losses = [tf.nn.l2_loss(target - activation) for target, activation in zip(target_content, cnn.activations)]
+        loss = tf.reduce_sum(losses)
 
         # Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-3)
-        grads_and_vars = optimizer.compute_gradients(cnn.loss)
+        grads_and_vars = optimizer.compute_gradients(loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
         # Output directory for models and summaries
@@ -128,9 +132,6 @@ with tf.Graph().as_default():
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
         saver = tf.train.Saver(tf.global_variables(), max_to_keep=FLAGS.num_checkpoints)
-
-        # Initialize all variables
-        sess.run(tf.global_variables_initializer())
 
         def train_step(x_batch, y_batch):
             """
