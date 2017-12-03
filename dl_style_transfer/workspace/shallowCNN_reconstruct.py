@@ -89,14 +89,16 @@ with tf.Graph().as_default():
         print("Loading saved model")
         restore_saver = tf.train.import_meta_graph(FLAGS.model_path + ".meta")  # Construct the graph
         restore_saver.restore(sess, FLAGS.model_path)  # Initialize the variables
-
-        print([n.name for n in tf.get_default_graph().as_graph_def().node if "Variable" in n.op])
-
+        print("Constructing Reconstruction Graph...")
         cnn = TextCNN(
             num_reconstructions=FLAGS.num_reconstructions,
             sequence_length=x_train.shape[1],
+            num_classes=y_train.shape[1],
+            vocab_size=len(vocab_processor.vocabulary_),
+            embedding_size=FLAGS.embedding_dim,
             filter_sizes=list(map(int, FLAGS.filter_sizes.split(","))),
-            num_filters=FLAGS.num_filters)
+            num_filters=FLAGS.num_filters,
+            l2_reg_lambda=FLAGS.l2_reg_lambda)
         sess.run(cnn.init_op)  # Initialize the cnn
 
         # Define Training procedure
