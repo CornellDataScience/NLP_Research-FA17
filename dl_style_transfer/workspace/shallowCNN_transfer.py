@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import sys
 import os
+
 sys.path.append(os.path.abspath('../'))
 from dl_style_transfer.layers.layers import xavier_initializer
 
@@ -11,19 +12,17 @@ class TextCNN(object):
     A CNN for text classification.
     Uses an embedding layer, followed by a convolutional, max-pooling and softmax layer.
     """
+
     def __init__(
-      self, num_reconstructions, trained_model):
+            self, num_reconstructions, sequence_length, filter_sizes, num_filters):
         self.num_reconstructions = num_reconstructions
-        self.sequence_length = trained_model.sequence_length
-        self.num_classes = trained_model.num_classes
-        self.vocab_size = trained_model.vocab_size
-        self.embedding_size = trained_model.embedding_size
-        self.filter_sizes = trained_model.filter_sizes
-        self.num_filters = trained_model.num_filters
-        self.l2_reg_lambda = trained_model.l2_reg_lambda
+        self.sequence_length = sequence_length
+        self.filter_sizes = filter_sizes
+        self.num_filters = num_filters
 
         # Placeholders for input, output and dropout
-        self.input_x = tf.get_variable("input_x", shape=[self.num_reconstructions, self.sequence_length], trainable=False)
+        self.input_x = tf.get_variable("input_x", shape=[self.num_reconstructions, self.sequence_length],
+                                       trainable=False)
         self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
         # Keeping track of l2 regularization loss (optional)
@@ -41,7 +40,7 @@ class TextCNN(object):
         for i, filter_size in enumerate(self.filter_sizes):
             with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=True):
                 # Convolution Layer
-                filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
+                # filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
                 W = tf.get_variable(name="W", trainable=False)
                 b = tf.get_variable(name="b", trainable=False)
                 conv = tf.nn.conv2d(

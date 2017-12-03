@@ -38,8 +38,8 @@ class TextCNN(object):
             with tf.variable_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
                 filter_shape = [filter_size, embedding_size, 1, num_filters]
-                W = tf.get_variable("W", tf.truncated_normal(filter_shape, stddev=0.1))
-                b = tf.Variable("b", tf.constant(0.1, shape=[num_filters]))
+                W = tf.get_variable("W", initializer=tf.truncated_normal(filter_shape, stddev=0.1))
+                b = tf.get_variable("b", initializer=tf.constant(0.1, shape=[num_filters]))
                 conv = tf.nn.conv2d(
                     self.embedded_chars_expanded,
                     W,
@@ -72,7 +72,7 @@ class TextCNN(object):
                 "W",
                 shape=[num_filters_total, num_classes],
                 initializer=tf.contrib.layers.xavier_initializer())
-            b = tf.get_variable("b", tf.constant(0.1, shape=[num_classes]))
+            b = tf.get_variable("b", initializer=tf.constant(0.1, shape=[num_classes]))
             l2_loss += tf.nn.l2_loss(W)
             l2_loss += tf.nn.l2_loss(b)
             self.scores = tf.nn.xw_plus_b(self.h_drop, W, b, name="scores")
