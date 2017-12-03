@@ -86,6 +86,8 @@ with tf.Graph().as_default():
             num_filters=FLAGS.num_filters,
             l2_reg_lambda=FLAGS.l2_reg_lambda)
 
+        print(x_train.shape)
+        print(x_train[1, ...])
         # Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-3)

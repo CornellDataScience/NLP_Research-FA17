@@ -99,7 +99,14 @@ with tf.Graph().as_default():
             filter_sizes=list(map(int, FLAGS.filter_sizes.split(","))),
             num_filters=FLAGS.num_filters,
             l2_reg_lambda=FLAGS.l2_reg_lambda)
+
         sess.run(cnn.init_op)  # Initialize the cnn
+
+        # Expand data into the embeddings
+        data_batch = x_train[:1]
+        embeddings_batch = np.zeros(data_batch.shape + [FLAGS.embedding_dim])
+        # Assign reconstruction matrix to data_batch
+        target_content = sess.run(cnn.activation)
 
         # Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
