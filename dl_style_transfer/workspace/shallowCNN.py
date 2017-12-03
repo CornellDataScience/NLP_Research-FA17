@@ -34,6 +34,7 @@ class TextCNN(object):
 
         # Create a convolution + maxpool layer for each filter size
         pooled_outputs = []
+        activations = []
         for i, filter_size in enumerate(filter_sizes):
             with tf.variable_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
@@ -44,23 +45,25 @@ class TextCNN(object):
                     self.embedded_chars_expanded,
                     W,
                     strides=[1, 1, 1, 1],
-                    padding="VALID",
+                    padding="SAME",
                     name="conv")
                 # Apply nonlinearity
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
+                activations.append(h)
                 # Maxpooling over the outputs
                 pooled = tf.nn.max_pool(
                     h,
                     ksize=[1, sequence_length - filter_size + 1, 1, 1],
                     strides=[1, 1, 1, 1],
-                    padding='VALID',
+                    padding='SAME',
                     name="pool")
                 pooled_outputs.append(pooled)
 
         # Combine all the pooled features
         num_filters_total = num_filters * len(filter_sizes)
-        self.h_pool = tf.concat(pooled_outputs, 3)
+        self.h_pool = tf.concat(pooled_outputs, axis=3)
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
+        self.activations_concat = tf.concat(activations, axis=3)
 
         # Add dropout
         with tf.variable_scope("dropout"):

@@ -11,6 +11,10 @@ from tensorflow.contrib import learn
 # Parameters
 # ==================================================
 
+# Model Initialization
+tf.flags.DEFINE_string("model_path", "", "Path to the trained model.")
+
+
 # Data loading params
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
 tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
@@ -78,12 +82,23 @@ with tf.Graph().as_default():
       allow_soft_placement=FLAGS.allow_soft_placement,
       log_device_placement=FLAGS.log_device_placement)
     sess = tf.Session(config=session_conf)
-    with sess.as_default():
+    with sess.as_default() as sess:
+        if FLAGS.model_path in (None, ""):
+            raise ValueError("`model_path` must be specified, but was:", FLAGS.model_path)
+
+        print("Loading saved model")
+        restore_saver = tf.train.import_meta_graph(FLAGS.model_path + ".meta")  # Construct the graph
+        restore_saver.restore(sess, FLAGS.model_path)  # Initialize the variables
+
+        print([n.name for n in tf.get_default_graph().as_graph_def().node if "Variable" in n.op])
+
         cnn = TextCNN(
             num_reconstructions=FLAGS.num_reconstructions,
             sequence_length=x_train.shape[1],
             filter_sizes=list(map(int, FLAGS.filter_sizes.split(","))),
             num_filters=FLAGS.num_filters)
+        sess.run(cnn.init_op)  # Initialize the cnn
+
         # Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-3)
