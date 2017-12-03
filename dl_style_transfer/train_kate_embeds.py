@@ -16,7 +16,7 @@ dataset = yelp.get_ryans_strange_input()
 train, test = train_test_split(dataset)
 kate = Kate(yelp.vocab_length(), 128, True, 32, 6.26)
 kate.train(train, 100, 128)
-kate.save_model("saved/100-epoch/kate-hot-100.ckpt")
+kate.save_model(sys.argv[1])
 
 
 def random_sample(data, num_samples):

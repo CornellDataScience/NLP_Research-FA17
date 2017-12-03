@@ -33,7 +33,7 @@ def train_batch(data, batch_size, epoch=100, start_stop_info=True, progress_inte
 
 
 train_batch(data, 128, 100)
-kate.save_model("saved/100-epoch/kate-bag-words-100.ckpt")
+kate.save_model(sys.argv[1])
 
 
 def random_sample(data, num_samples):
