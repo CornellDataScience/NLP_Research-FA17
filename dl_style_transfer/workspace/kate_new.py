@@ -107,8 +107,9 @@ class Kate:
             print("Starting training for %d epochs" % n_epochs)
 
         batch_per_epoch = math.ceil(training_size/batch_size)
-        n_batch = n_epochs*batch_per_epoch
+        n_iters = n_epochs*batch_per_epoch
         last_time = time()
+        count = 0
         for epoch in range(n_epochs):
             perm = np.random.permutation(training_size)
             for i in range(0, training_size, batch_size):
@@ -119,7 +120,8 @@ class Kate:
                 if progress_interval is not None and (current_time - last_time) >= progress_interval:
                     last_time = current_time
                     print("Current Loss Value: %.10f, Percent Complete: %.4f" %
-                          (loss_val, (epoch*batch_per_epoch + i) / n_batch * 100))
+                          (loss_val, count / n_iters * 100))
+            count += 1
         if start_stop_info:
             print("Completed Training.")
         return loss_val
