@@ -20,8 +20,8 @@ class Kate:
             embedding_size_in:  The size of the input embeddings. If `expand_hot` is `True`, this is the size of the one
                                 hot vectors that will be generated.
             embedding_size_out: The size of the output embeddings. This is the size of the encoded vectors.
-            is_hot:             Boolean determining if the input represents bag of words or one hot representation
-                                a one-hot representation.
+            is_hot:             Boolean determining if the input is a log normalized bag of words, or if it is a list of
+                                indices to be expanded to a one-hot representation.
             k:                  The number of neurons to keep in the k-competitive layer.
             alpha:              Sets the intensity of the energy redistribution in the k-comptitive layer.
             learning_rate:      The learning rate for training.
@@ -55,14 +55,12 @@ class Kate:
                 bias = tf.get_variable('Scores', initializer=xavier_initializer((embedding_size_in,)))
                 scores = tf.matmul(self._encoded, weights) + bias  # `[batch*max_seq_len, embedding_size_in]
 
-                self._decoded = tf.nn.softmax(scores, name='Decoded')
+                self._decoded = (tf.nn.softmax if is_hot else tf.nn.sigmoid)(scores, name='Decoded')
                 self._argmax = tf.argmax(self._decoded, axis=-1, name='Decoded-Argmax')
 
             with tf.variable_scope('Loss'):
-                if is_hot:
-                    self._loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=scores, labels=self._embedding, name='Loss'))
-                else:
-                    self._loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=scores, labels=self._embedding, name='Loss'))
+                loss_fn = tf.nn.softmax_cross_entropy_with_logits if is_hot else tf.nn.sigmoid_cross_entropy_with_logits
+                self._loss = tf.reduce_mean(loss_fn(logits=scores, labels=self._embedding, name='Loss'))
                 self._train_step = tf.train.AdamOptimizer(learning_rate).minimize(self._loss)
 
             self._sess = tf.Session()
