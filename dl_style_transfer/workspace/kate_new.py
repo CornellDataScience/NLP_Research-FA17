@@ -59,8 +59,8 @@ class Kate:
                 self._argmax = tf.argmax(self._decoded, axis=-1, name='Decoded-Argmax')
 
             with tf.variable_scope('Loss'):
-                loss_fn = tf.nn.softmax_cross_entropy_with_logits if is_hot else tf.nn.sigmoid_cross_entropy_with_logits
-                self._loss = tf.reduce_mean(loss_fn(logits=scores, labels=self._embedding, name='Loss'))
+                loss_fn = tf.nn.sparse_softmax_cross_entropy_with_logits if is_hot else tf.nn.sigmoid_cross_entropy_with_logits
+                self._loss = tf.reduce_mean(loss_fn(logits=scores, labels=(self._x if is_hot else self._embedding), name='Loss'))
                 self._train_step = tf.train.AdamOptimizer(learning_rate).minimize(self._loss)
 
             self._sess = tf.Session()
@@ -119,9 +119,9 @@ class Kate:
                 current_time = time()
                 if progress_interval is not None and (current_time - last_time) >= progress_interval:
                     last_time = current_time
-                    print("Current Loss Value: %.10f, Percent Complete: %.4f" %
+                    print("Current Loss Value: %.10f, Percent Complete: %.6f" %
                           (loss_val, count / n_iters * 100))
-            count += 1
+                count += 1
         if start_stop_info:
             print("Completed Training.")
         return loss_val
