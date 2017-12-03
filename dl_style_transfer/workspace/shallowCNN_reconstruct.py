@@ -9,6 +9,9 @@ from shallowCNN_transfer import TextCNN
 from tensorflow.contrib import learn
 from sklearn.preprocessing import OneHotEncoder
 
+import sys, os
+sys.path.append(os.path.abspath('../../'))
+
 # Parameters
 # ==================================================
 
@@ -108,7 +111,7 @@ with tf.Graph().as_default():
         embeddings_batch = np.zeros(data_batch.shape + (FLAGS.embedding_dim,))
         n = len(vocab_processor.vocabulary_)
         for i, sentence in enumerate(x_train):
-            embeddings_batch[i] = np.array(OneHotEncoder(n_values=n).fit_transform(np.array(sentence).reshape(1, -1)).todense()).reshape(n, -1)
+            embeddings_batch[i] = np.array(OneHotEncoder(n_values=n).fit_transform(np.array(sentence).reshape(1, -1)).todense()).reshape(-1, n)
 
         # Assign reconstruction tensor to data_batch to generatae target_content
         target_content = sess.run(cnn.activations, feed_dict={cnn.reconstructions: embeddings_batch})
@@ -129,3 +132,8 @@ with tf.Graph().as_default():
             _, loss = sess.run([train_op, loss])
             if i%50 == 0:
                 print("Loss:", loss)
+
+        reconstructions = sess.run(cnn.reconstructions)
+
+        # TODO: display reconstructions
+        argmax = np.argmax(reconstructions)
