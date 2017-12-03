@@ -7,6 +7,7 @@ import datetime
 import data_helpers
 from shallowCNN_transfer import TextCNN
 from tensorflow.contrib import learn
+from sklearn.preprocessing import OneHotEncoder
 
 # Parameters
 # ==================================================
@@ -105,6 +106,8 @@ with tf.Graph().as_default():
         # Expand data into the embeddings
         data_batch = x_train[:1]
         embeddings_batch = np.zeros(data_batch.shape + [FLAGS.embedding_dim])
+        for i, sentence in enumerate(x_train):
+            x_train[i] = np.array(OneHotEncoder().fit_transform(sentence).todense())
         # Assign reconstruction matrix to data_batch
         target_content = sess.run(cnn.activations)
 
