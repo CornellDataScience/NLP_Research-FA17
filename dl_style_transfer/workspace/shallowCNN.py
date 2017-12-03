@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
+from layers import layers
+
 
 class TextCNN(object):
     """
