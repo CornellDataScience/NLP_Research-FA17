@@ -34,7 +34,6 @@ class TextCNN(object):
 
         # Create a convolution + maxpool layer for each filter size
         pooled_outputs = []
-        #activations = []
         for i, filter_size in enumerate(filter_sizes):
             with tf.variable_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
@@ -50,7 +49,7 @@ class TextCNN(object):
                 # Apply nonlinearity
                 print("conv shape:", conv.shape, filter_size)
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
-                #activations.append(h)
+
                 # Maxpooling over the outputs
                 pooled = tf.nn.max_pool(
                     h,
@@ -67,7 +66,6 @@ class TextCNN(object):
         print(self.h_pool.shape)
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
         print(self.h_pool_flat.shape)
-        #self.activations_concat = tf.concat(activations, axis=3)
 
         # Add dropout
         with tf.variable_scope("dropout"):
