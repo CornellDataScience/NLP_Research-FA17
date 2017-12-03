@@ -107,7 +107,7 @@ with tf.Graph().as_default():
         data_batch = x_train[:1]
         embeddings_batch = np.zeros(data_batch.shape + [FLAGS.embedding_dim])
         for i, sentence in enumerate(x_train):
-            x_train[i] = np.array(OneHotEncoder().fit_transform(sentence).todense())
+            embeddings_batch[i] = np.array(OneHotEncoder().fit_transform(sentence).todense())
         # Assign reconstruction matrix to data_batch
         target_content = sess.run(cnn.activations)
 
