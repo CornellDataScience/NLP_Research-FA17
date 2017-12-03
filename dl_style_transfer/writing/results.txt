@@ -1,0 +1,3 @@
+Kate-100-hot:
+    Train: 1.0
+    Test: 0.97332
