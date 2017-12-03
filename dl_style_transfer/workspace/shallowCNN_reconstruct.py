@@ -26,7 +26,7 @@ tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity
 tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
 
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
+tf.flags.DEFINE_integer("embedding_dim", 14351, "Dimensionality of character embedding (default: 128)")
 tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
 tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
 tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
@@ -79,6 +79,27 @@ print("Vocabulary Size: {:d}".format(len(vocab_processor.vocabulary_)))
 print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 
 
+def onehotencode(vector, num_classes=None):
+    """
+    Converts an input 1-D vector of integers into an output
+    2-D array of one-hot vectors, where an i'th input value
+    of j will set a '1' in the i'th row, j'th column of the
+    output array.
+    """
+    assert isinstance(vector, np.ndarray)
+    assert len(vector) > 0
+
+    if num_classes is None:
+        num_classes = np.max(vector)+1
+    else:
+        assert num_classes > 0
+        assert num_classes >= np.max(vector)
+
+    result = np.zeros(shape=(len(vector), num_classes))
+    result[np.arange(len(vector)), vector] = 1
+    return result.astype(int)
+
+
 # Training
 # ==================================================
 
@@ -109,10 +130,10 @@ with tf.Graph().as_default():
 
         # Expand data into the embeddings
         data_batch = x_train[:1]
+        vocab_size = len(vocab_processor.vocabulary_)
         embeddings_batch = np.zeros(data_batch.shape + (FLAGS.embedding_dim,))
-        n = len(vocab_processor.vocabulary_)
-        for i, sentence in enumerate(x_train):
-            embeddings_batch[i] = np.array(OneHotEncoder(n_values=n).fit_transform(np.array(sentence).reshape(1, -1)).todense()).reshape(-1, n)
+        for i, sentence in enumerate(data_batch):
+            embeddings_batch[i] = onehotencode(sentence, num_classes=vocab_size)
 
         # Assign reconstruction tensor to data_batch to generatae target_content
         target_content = sess.run(cnn.activations, feed_dict={cnn.reconstructions: embeddings_batch})
