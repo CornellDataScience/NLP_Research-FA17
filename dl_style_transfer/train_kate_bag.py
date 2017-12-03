@@ -13,6 +13,11 @@ from time import time
 seed = 1337
 np.random.seed(seed)
 
+if len(sys.argv) is not 2:
+    raise ValueError("Please provide the path where KATE will be saved!")
+
+save_path = sys.argv[1]
+
 data = yelp.get_small_bag()
 train, test = train_test_split(data)
 kate = Kate(yelp.vocab_length(), 128, False, 32, 6.26)
@@ -33,7 +38,7 @@ def train_batch(data, batch_size, epoch=100, start_stop_info=True, progress_inte
 
 
 train_batch(data, 128, 100)
-kate.save_model(sys.argv[1])
+kate.save_model(save_path)
 
 
 def random_sample(data, num_samples):
