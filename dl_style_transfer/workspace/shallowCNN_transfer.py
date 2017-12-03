@@ -40,7 +40,6 @@ class TextCNN(object):
         for i, filter_size in enumerate(self.filter_sizes):
             with tf.variable_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
-                # filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
                 W = tf.get_variable(name="W", trainable=False)
                 print(W.initializer)
                 b = tf.get_variable(name="b", trainable=False)
@@ -48,7 +47,7 @@ class TextCNN(object):
                     self.embedded_chars_expanded,
                     W,
                     strides=[1, 1, 1, 1],
-                    padding="SAME",
+                    padding="VALID",
                     name="conv")
                 # Apply nonlinearity
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
@@ -66,7 +65,6 @@ class TextCNN(object):
         num_filters_total = self.num_filters * len(self.filter_sizes)
         self.h_pool = tf.concat(pooled_outputs, axis=3)
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
-        self.activations_concat = tf.concat(activations, axis=3)
 
         # Add dropout
         with tf.variable_scope("dropout"):
