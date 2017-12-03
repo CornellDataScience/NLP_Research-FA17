@@ -106,8 +106,9 @@ with tf.Graph().as_default():
         # Expand data into the embeddings
         data_batch = x_train[:1]
         embeddings_batch = np.zeros(data_batch.shape + (FLAGS.embedding_dim,))
+        n = len(vocab_processor.vocabulary_)
         for i, sentence in enumerate(x_train):
-            embeddings_batch[i] = np.array(OneHotEncoder(n_values=len(vocab_processor.vocabulary_).fit_transform(np.array(sentence).reshape(1, -1))).todense()).reshape(len(vocab_processor.vocabulary_), -1)
+            embeddings_batch[i] = np.array(OneHotEncoder(n_values=n).fit_transform(np.array(sentence).reshape(1, -1))).todense().reshape(n, -1)
 
         # Assign reconstruction tensor to data_batch to generatae target_content
         target_content = sess.run(cnn.activations, feed_dict={cnn.reconstructions: embeddings_batch})
