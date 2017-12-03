@@ -11,3 +11,6 @@ __pycache__/
 
 # Mac bs
 .DS_Store
+
+# Image reconstructions
+dl_style_transfer/reconstructions/
