@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/luca/Projects/Yelp-FA17/dl_style_transfer/runs"
+all_model_checkpoint_paths: "/home/luca/Projects/Yelp-FA17/dl_style_transfer/runs"
