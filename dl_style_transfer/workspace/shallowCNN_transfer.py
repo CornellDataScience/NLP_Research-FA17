@@ -4,7 +4,6 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('../'))
-from dl_style_transfer.layers.layers import xavier_initializer
 
 
 class TextCNN(object):
@@ -13,9 +12,9 @@ class TextCNN(object):
     Uses an embedding layer, followed by a convolutional, max-pooling and softmax layer.
     """
 
-    def __init__(
-            self, num_reconstructions, sequence_length, num_classes, vocab_size,
-            embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
+    def __init__(self, num_reconstructions, sequence_length, num_classes, vocab_size, embedding_size, filter_sizes,
+                 num_filters, l2_reg_lambda=0.0):
+
         self.num_reconstructions = num_reconstructions
         self.sequence_length = sequence_length
         self.num_classes = num_classes
@@ -33,14 +32,14 @@ class TextCNN(object):
 
             self.reconstructions = tf.get_variable(
                 name="Reconstructions",
-                initializer=xavier_initializer([num_reconstructions, sequence_length, embedding_size]))
+                initializer=tf.random_uniform([num_reconstructions, sequence_length, embedding_size]))
             self.embedded_chars_expanded = tf.expand_dims(self.reconstructions, -1)
 
         # Create a convolution + maxpool layer for each filter size
         pooled_outputs = []
         self.activations = []
         for i, filter_size in enumerate(self.filter_sizes):
-            with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=True):
+            with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=tf.AUTO_REUSE):
                 # Convolution Layer
                 filter_shape = [filter_size, embedding_size, 1, num_filters]
                 W = tf.get_variable(name="W", shape=filter_shape, trainable=False)
@@ -73,7 +72,7 @@ class TextCNN(object):
             self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
 
         # Final (unnormalized) scores and predictions
-        with tf.variable_scope("output", reuse=True):
+        with tf.variable_scope("output", reuse=tf.AUTO_REUSE):
             W = tf.get_variable(
                 "W", shape=[num_filters_total, num_classes], trainable=False)
             b = tf.get_variable(name="b", shape=[num_classes], trainable=False)

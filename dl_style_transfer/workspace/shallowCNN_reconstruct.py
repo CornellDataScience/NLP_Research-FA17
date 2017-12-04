@@ -10,7 +10,6 @@ from sklearn.preprocessing import OneHotEncoder
 
 import sys, os
 sys.path.append(os.path.abspath('../../'))
-import dl_style_transfer.layers.layers
 
 # Parameters
 # ==================================================
