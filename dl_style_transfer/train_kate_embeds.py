@@ -1,4 +1,5 @@
 import numpy as np
+import atexit
 import os
 import sys
 sys.path.append(os.path.abspath('../'))
@@ -20,6 +21,13 @@ save_path = sys.argv[1]
 dataset = yelp.get_ryans_strange_input()
 train, test = train_test_split(dataset)
 kate = Kate(yelp.vocab_length(), 128, True, 32, 6.26)
+
+def at_exit():
+    print("Quitting...")
+    kate.save_model(save_path)
+
+atexit.register(at_exit)
+
 kate.train(train, 100, 128)
 kate.save_model(save_path)
 

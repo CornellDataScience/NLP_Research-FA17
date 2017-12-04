@@ -1,7 +1,7 @@
 import numpy as np
+import atexit
 import os
 import sys
-
 sys.path.append(os.path.abspath('../'))
 
 import dl_style_transfer.from_shake_yelp as yelp
@@ -23,6 +23,11 @@ train, test = train_test_split(data)
 kate = Kate(yelp.vocab_length(), 128, False, 32, 6.26)
 # kate.train(train, 100, 128)
 
+def at_exit():
+    print("Quitting...")
+    kate.save_model(save_path)
+
+atexit.register(at_exit)
 
 def train_batch(data, batch_size, epoch=100, start_stop_info=True, progress_interval=5):
     n_batches = np.ceil(len(data) / batch_size)
@@ -38,7 +43,6 @@ def train_batch(data, batch_size, epoch=100, start_stop_info=True, progress_inte
 
 
 train_batch(data, 128, 100)
-kate.save_model(save_path)
 
 
 def random_sample(data, num_samples):
