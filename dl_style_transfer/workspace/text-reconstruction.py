@@ -37,6 +37,9 @@ embedding_size = 128
 checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
 graph = tf.Graph()
 
+checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+graph = tf.Graph()
+
 with graph.as_default():
     session_conf = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
     sess = tf.Session(config=session_conf)
@@ -49,6 +52,8 @@ with graph.as_default():
         # Get the placeholders from the graph by name
         input_x = graph.get_operation_by_name("input_x").outputs[0]
         dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
+        W_emb_trained = sess.run(graph.get_operation_by_name("embedding/W").outputs[0])
+        W_emb = tf.constant(sess.run(graph.get_operation_by_name("embedding/W").outputs[0]))
 
         # Tensors we want to evaluate
         activations = []
@@ -87,9 +92,14 @@ with graph.as_default():
             for it in range(n_iters):
                 sess.run(train_step)
 
-        reconstructed = sess.run(reconstruction)
+        emb_distances = tf.matmul(tf.nn.l2_normalize(W_emb, dim=1),
+                                  tf.nn.l2_normalize(reconstruction[0], dim=1),
+                                  transpose_b=True)
+        token_ids = tf.argmax(emb_distances, axis=0)
+        # print(sess.run(token_ids))
+
         words = []
-        for idx in np.argmax(reconstructed, axis=-1).flatten():
+        for idx in sess.run(token_ids):
             words.append(list(vocab_dict.keys())[list(vocab_dict.values()).index(idx)])
         sentence_length = np.where(x_test[test_idx] == 0)[0][0]
         print(' '.join(word for word in words[:sentence_length]))
