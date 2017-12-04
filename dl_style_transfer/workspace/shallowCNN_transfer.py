@@ -39,7 +39,7 @@ class TextCNN(object):
         pooled_outputs = []
         self.activations = []
         for i, filter_size in enumerate(self.filter_sizes):
-            with tf.variable_scope("conv-maxpool-%s" % filter_size, reuse=tf.AUTO_REUSE):
+            with tf.variable_scope("conv-maxpo  ol-%s" % filter_size, reuse=tf.AUTO_REUSE):
                 # Convolution Layer
                 filter_shape = [filter_size, embedding_size, 1, num_filters]
                 W = tf.get_variable(name="W", shape=filter_shape, trainable=False)
