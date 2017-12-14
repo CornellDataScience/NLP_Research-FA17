@@ -29,13 +29,23 @@ In our study, we preprocessed the dataset so that it only contains the reviews f
 We conduct a series of experiments to how accurate our topic models can be with both **supervised learning** and **unsupervised learning**. **Supervised learning** is when you know the "answers" to the data. For example, predicting ratings of reviews with topic is a supervised learning. On the other hand, **unsupervised learning** is when you *don't* know the "answers" to the data. For example, recommendation systems would be unsupervised since we cannot measure the accuracy the algorithms unless we ask users how useful the recommendations are.
 
 ### Embeddings
-We found multiple issues in traditional LDA model. For example, LDA would give high weights on frequently appearing words such as *food* or *good*. These words can be useful if we are interested in rating prediction; however, we are more interested in business specific terms such as name of menu, specific service, etc. We modified the algorithms and created our embeddings.
+We found multiple issues in traditional LDA model. For example, LDA would give high weights on frequently appearing words such as *food* or *good*. These words can be useful if we are interested in rating prediction; however, we are more interested in business specific terms such as name of menu, specific service, etc. We modified the algorithms and created our own embeddings.
+
+The followings show how Yelp reviews look like in latent topic space. We sample random reviews from 2 different restaurants; the one on the left is an expensive Sushi restaurant and the one on the right is a dance club. We can see different business has different patterns in the review topics.
+
+The dense vertical lines indicate commonly mentioned topics. For example, 2 lines in the left graph are "sushi" and "ice cream", and the line in the right graph is "club".
+<p align="center">
+  <img src="results/embedding3_heat_case1.png" float = "left" width="40%">
+  <img src="results/embedding3_heat_case2.png" float = "left" width="40%">
+</p>
+
+
 
 ### Unsupervised Learning
 We built a recommendation system with our topic embeddings using **matrix factorization**. In this system, we recommend the most "informative" positive and negative reviews for business owners based on the review topics.
 
 <p align="center">
-  <img src="results/unsupervised.png" style="margin:0 auto;" width="90%">
+<img src="results/unsupervised.png" style="margin:0 auto;" width="90%">
 </p>
 
 ### Supervised Learning
@@ -45,6 +55,14 @@ Finally, we use topic models to predict the future trajectory of business trend.
 </p>
 
 ## Results
+### Unsupervised Learning
+Here are the most recommended reviews based on our topic models. As you can see all of the recommendations successfully recognized positive/negative sentiments of the reviews. Furthermore, our modification to LDA (**tfidf** in the table, please refer the [paper](submission/CDS_final_submission.pdf) for more details), performed remarkably well in terms of providing specific feedbacks of the business. Interestingly, both reviews are rated 3, and we can see how the scaling of the rating could vary for each users.
+<p align="center">
+  <img src="results/recommendation.png" style="margin:0 auto;" width="90%">
+</p>
+
+
+### Supervised Learning
 
 ### Useful literature
 - [Sentence Level Recurrent Topic Model: Letting Topics Speak for Themselves](https://arxiv.org/pdf/1604.02038.pdf)
