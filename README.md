@@ -9,7 +9,8 @@ Coming Soon!
 
 ## Subteams
 
-* ### [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)    
+* ### [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)
+
    **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
    The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
 
@@ -25,9 +26,12 @@ Coming Soon!
   **Members:** Luca Leeser (INFO '18), Yuji Akimoto (ORIE '19), Ryan Butler (CS '19), Cameron Ibrahim (ORIE '20)   
   We are seeking to modify the neural style transfer algorithm proposed by [Gatys et. al.](https://arxiv.org/abs/1508.06576) to make it applicable to text. Our goal is to devise an algorithm that is able to transfer the writing style of one review onto the content of another.   
 
-## Publications
-
-Coming Soon!
+## Final Submissions
+You can visit our final papers from the following links:
+* [Extracting Rating Dimensions from Hidden Topics in Text Reviews](/latent_variable/submission/extracting-rating-dimensions.pdf)
+* [Topic Modeling as a Trend-Aware Performance Metric](/topic_over_time/submission/CDS_final_submission.pdf)
+* [Identifying Experts in the Yelp Dataset](/local-elites/submission/Final_Paper.pdf)
+* [On the Use of K-Competitive Networks for Writing Style Transfer](/dl_style_transfer/submission/k-competitive-networks.pdf)
 
 ## How to get the code
 The code uses git submodules, so to properly intialize those you need the `--recurse-submodules` option. Additionally, using `--depth 1` will avoid cloning the history, making the clone faster.
