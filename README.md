@@ -1,11 +1,13 @@
 # CDS: NLP Research Team
 
 ## About Us
-We are a student-led research team from [Cornell Data Science ](https://datascience.engineering.cornell.edu/index.html)(CDS), working on Natural Language Processing projects under [Prof. Thorsten Joachims](http://www.cs.cornell.edu/people/tj/). This semester, we are participating in the [Yelp Dataset Challenge](https://www.yelp.com/dataset/challenge), aiming to provide analytic insights from the raw review texts. Our final products are in the form research paper, making the use of machine learning algorithms and statistical validations. You can visit the subteam sections to see our individual work.
+We are a student-led research team from [Cornell Data Science ](https://datascience.engineering.cornell.edu/index.html)(CDS), working on Natural Language Processing projects under [Prof. Thorsten Joachims](http://www.cs.cornell.edu/people/tj/). This semester, we are participating in the [Yelp Dataset Challenge](https://www.yelp.com/dataset/challenge) to provide analytic insights from raw review texts. Our final products are research papers which makes use of machine learning algorithms and statistical validations. You can visit the subteam sections to see our individual work.
 
 ## Achivements
 
-Coming Soon!
+This past semester, we had a wide range of research topics, from recommendation system to deep style transfer. In general, we took the approach called Natural Language Processing -- an interaction between machine learning and text analysis.
+
+All researches demonstrated remarkable results; an implementation of recommendation system that beats industry standard algorithm, an accurate analytic tool to assess business trends, a classifier to identify locally popular users, and a writing style transfer with deep learning.
 
 ## Subteams
 
