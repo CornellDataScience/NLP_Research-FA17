@@ -18,7 +18,7 @@ Coming Soon!
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
   We are developing a stream-lined star-prediction system to better assess business performance using different types of classifiers, which accounts for the temporal trends in user review topics and the strength/weakness of business characteristics in latent space.
 
-* ### [**Local Elites in Yelp**](/local-elites)   
+* ### [**Local Experts in Yelp**](/local-experts)   
   **Members:** Brandon Kates (BTRY '19), Brian Cheang (CS '20)     
   The objective of the project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users.  
 
