@@ -32,7 +32,7 @@ All researches demonstrated remarkable results; an implementation of recommendat
 You can visit our final papers from the following links:
 * [Extracting Rating Dimensions from Hidden Topics in Text Reviews](/latent_variable/submission/extracting-rating-dimensions.pdf)
 * [Topic Modeling as a Trend-Aware Performance Metric](/topic_over_time/submission/CDS_final_submission.pdf)
-* [Identifying Experts in the Yelp Dataset](/local-elites/submission/Final_Paper.pdf)
+* [Identifying Experts in the Yelp Dataset](/local-experts/submission/Final_Paper.pdf)
 * [On the Use of K-Competitive Networks for Writing Style Transfer](/dl_style_transfer/submission/k-competitive-networks.pdf)
 
 ## How to get the code
