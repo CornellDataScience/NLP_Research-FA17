@@ -24,7 +24,7 @@ All researches demonstrated remarkable results; an implementation of recommendat
    **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
    The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
 
-* ### [**Improving Star Rating as Trend-Aware Performance Metrics**](/topic_over_time)     
+* ### [**Topic Modeling as a Trend-Aware Performance Metric**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
   We are developing a stream-lined star-prediction system to better assess business performance using different types of classifiers, which accounts for the temporal trends in user review topics and the strength/weakness of business characteristics in latent space.
 
