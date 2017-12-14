@@ -7,7 +7,7 @@ High ratings and awards can drive large tourist crowds into local favorite resta
 ## Background
 The objective of the research project is to build and combine two models (Local Expert Identifier / Topical Expert Identifier) for the purpose of identifying 'experts' among yelp users. The "Local Expert Identifier" is a Gaussian Mixture Model that identifies clusters in a given user's review locations to predict the user's most probable location.
 
-[Map](/papers/Picture1.png)
+![Map](papers/Picture1.png)
 
 ## Experiments:
 ### Local Expert Identifier
