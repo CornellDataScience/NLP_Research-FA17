@@ -20,7 +20,7 @@ Use “Codeword” method to add positive and negative description to topics.
 
 ## Data
 
-We use the [Yelp Dataset](https://www.yelp.com/dataset/challenge) to as our source data. More specifically, we are invesitgating the latent topics for all the restaurants in Las Vegas, which has 7298 restaurants and 916554 reviews. After preprocessing, we use those text reviews and rating stars to build our recommendation system.
+We use the [Yelp Dataset](https://www.yelp.com/dataset/challenge) to as our source data. More specifically, we are invesitgating the latent topics for all the restaurants in Las Vegas, which has 1231 restaurants. We split the preprocessed review dataset into 70% training set (41926 pieces of reviews by 15728 users) and 30% testing set (18758 pieces of reviews). After preprocessing, we use those text reviews and rating stars to build our recommendation system.
 
 ## Experiment
 
@@ -41,7 +41,8 @@ Our objective is to learn hidden dimensions of behind a overall rating for a spe
 
 ## Results
 
-After running a small sample of burger places in Las Vegas, our baseline method gives a mean absolute error of **0.9308** while our topic modelling method gives a mean absolute error of **0.703260**. So far, our method beats the baseline. Stay tuned for results on a larger dataset!
+After running a small sample of burger places in Madison, our baseline method gives a mean absolute error of **0.857** while our topic modelling method gives a mean absolute error of **1.352**. On hypothesis testing the MAE results for methods on 5 cities, we have p-value equal to 0.4988, which is greater than 0.05, so we do not reject the null hypothesis that true difference in means is equal to 0, that is, in terms of MAE, both methods have similar performance.
+Given the evaluation results measured by MAE and distribution of predicted value and expected value for both baseline and our method, we can conclude that our method is slightly better than the baseline in spite of similar MAE.
 
-![alt text](src/result.png)
+![alt text](src/dist.jpg)
 
