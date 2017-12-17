@@ -1,5 +1,5 @@
 # Extracting Rating Dimensions from Hidden Topics in Text Reviews: a Better Recommendation System
-See submitted paper [here](/submission/extracting-rating-dimensions.pdf). 
+See submitted paper [here](/latent_variable/submission/extracting-rating-dimensions.pdf). 
 
 **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20) 
 
