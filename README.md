@@ -22,7 +22,7 @@ All researches demonstrated remarkable results; an implementation of recommendat
 * ### [**Extracting Rating Dimensions with Text Reviews**](/latent_variable)
 
    **Members:** Xuwen Shen (STAT '18), Xinzhe Yang (CS '20)   
-   The goal for the project is to create a recommendation system which recommends restaurants to a specific user given the user's preference and the restaurants' rating with respect to the user's preference.
+   In order to give insights to overall ratings and then create a new personalized recommendation system based on the rating that account for his or her preferences, we were hoping to extract hidden information in reviews including an individual user’s preference and a business’s properties (scores for each feature of the business). We used LDA to get topics from the review. If we have k topics in reviews then we extract k (the same number as the number of topics in Yelp reviews) dimensions in rating for each topic respectively and then use the k dimensional rating to compute the recommendation score for an individual. Finally, we created a model combining the topics and overall ratings to get a personalized ratings for a specific user.
 
 * ### [**Topic Modeling as a Trend-Aware Performance Metric**](/topic_over_time)     
   **Members:** Kenta Takatsu (CS '19), Caroline Chang (CS '20)   
