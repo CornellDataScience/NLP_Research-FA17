@@ -13,11 +13,11 @@ In order to give insights to overall ratings and then create a new personalized 
 
 There is a commonly used recommendation system called Collaborative Filtering, it predicts a user’s rating for a business based on purely overall ratings. It does not perform well on our data. For this reason, we hope to improve the performance by combining text reviews and overall ratings. 
 There are two methods which two related parpers are based on:
-* Hidden Topics: Understanding Rating Dimensions with Review Text, by [McAuley et. al.](/paper/reating_by_reviews_LDA.pdf)
+* Hidden Topics: Understanding Rating Dimensions with Review Text, by [McAuley et. al.](/latent_variable/paper/reating_by_reviews_LDA.pdf)
 
 Use a transformation function to link the topic probability and a business’s properties (scores for each feature of the business).
 
-* Personalizing Ratings, by [Linshi](/paper/YelpDatasetChallengeWinner_PersonalizingRatings.pdf)
+* Personalizing Ratings, by [Linshi](/latent_variable/paper/YelpDatasetChallengeWinner_PersonalizingRatings.pdf)
 Use “Codeword” method to add positive and negative description to topics.
 
 ## Data
